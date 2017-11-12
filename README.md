@@ -4,12 +4,8 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/puemos/speech-to-text-recognition.svg)](https://greenkeeper.io/)
 [![Travis](https://img.shields.io/travis/puemos/speech-to-text-recognition.svg)](https://travis-ci.org/puemos/speech-to-text-recognition)
 [![Coveralls](https://img.shields.io/coveralls/puemos/speech-to-text-recognition.svg)](https://coveralls.io/github/puemos/speech-to-text-recognition)
-[![Dev Dependencies](https://david-dm.org/puemos/speech-to-text-recognition/dev-status.svg)](https://david-dm.org/puemos/speech-to-text-recognition?type=dev)
-[![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://paypal.me/AJoverMorales)
+[![Dev Dependencies](https://david-dm.org/puemos/speech-to-text-recognition/dev-status.svg)]
 
-A starter project that makes creating a TypeScript library extremely easy.
-
-![](https://i.imgur.com/opUmHp0.png)
 
 ### Usage
 
