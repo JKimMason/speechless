@@ -40,14 +40,9 @@ describe("Recognition", () => {
     expect(langAfter).toEqual("it");
   });
 
-  it("should be singletone", () => {
-    const recognition2 = new Recognition();
-    expect(recognition2).toEqual(recognition);
-  });
-
   it("should call onChange", () => {
     const spy = jest.spyOn(recognition as any, "onChangeCallback");
-    recognition.speak();
+    recognition.listen();
     speechRecognition.say(oneSentence("hi are"));
     speechRecognition.say(oneSentence("hi are you"));
     speechRecognition.say(oneSentence("hi are you doing here", true));
@@ -59,7 +54,7 @@ describe("Recognition", () => {
 
   it("should call end ", () => {
     const spyEnd = jest.spyOn(recognition as any, "onEndCallback");
-    recognition.speak();
+    recognition.listen();
     speechRecognition.say(oneSentence("hi are"));
     speechRecognition.say(oneSentence("hi are you"));
     speechRecognition.say(oneSentence("hi are you doing here", true));
@@ -69,7 +64,7 @@ describe("Recognition", () => {
 
   it("should not call end ", () => {
     const spyEnd = jest.spyOn(recognition as any, "onEndCallback");
-    recognition.speak();
+    recognition.listen();
 
     speechRecognition.say(oneSentence("hi are"));
     speechRecognition.say(oneSentence("hi are you"));
@@ -79,9 +74,9 @@ describe("Recognition", () => {
   it("should not start a runnig recognition ", () => {
     const spy = jest.spyOn(speechRecognition, "start");
 
-    recognition.speak();
+    recognition.listen();
     expect(spy).toBeCalled();
-    recognition.speak();
+    recognition.listen();
     expect(spy.mock.calls.length).toEqual(1);
   });
 
@@ -96,7 +91,7 @@ describe("Recognition", () => {
     const spyEnd = jest.spyOn(recognition as any, "onEndCallback");
     const spyStop = jest.spyOn(recognition as any, "onStopCallback");
 
-    recognition.speak();
+    recognition.listen();
     speechRecognition.say(oneSentence("hi are"));
     speechRecognition.say(oneSentence("hi are you"));
     recognition.stop();
@@ -117,7 +112,7 @@ describe("Recognition", () => {
     );
     speechRecognition = (recognition as any).speechRecognition;
     expect((recognition as any).lang).toEqual("he");
-    recognition.speak();
+    recognition.listen();
     speechRecognition.say(oneSentence("hi are"));
     speechRecognition.say(oneSentence("hi are you"));
     speechRecognition.say(oneSentence("hi are you doing here", true));
@@ -128,7 +123,7 @@ describe("Recognition", () => {
     expect(onChangeCallback).toBeCalledWith("hi are you");
     expect(onChangeCallback).toBeCalledWith("hi are you doing here");
 
-    recognition.speak();
+    recognition.listen();
     recognition.stop();
 
     expect(onStopCallback).toBeCalled();

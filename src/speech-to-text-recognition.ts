@@ -1,136 +1,132 @@
 export interface IRecognitionState {
-  inputValue: string
-  speaking: boolean
-  force: boolean
+  inputValue: string;
+  listening: boolean;
+  force: boolean;
 }
 
 export interface IRecognition {
-  setup(): IRecognition
-  setLang(lang: string): IRecognition
-  speak(): void
-  stop(): void
+  setup(): IRecognition;
+  setLang(lang: string): IRecognition;
+  listen(): void;
+  stop(): void;
 }
 
 export interface IWindow extends Window {
-  webkitSpeechRecognition: SpeechRecognitionStatic
+  webkitSpeechRecognition: SpeechRecognitionStatic;
 }
 
 function noop(): void {
-  return
+  return;
 }
 
 export class Recognition implements IRecognition {
-  static instance: Recognition
-  private state: IRecognitionState
-  private speechRecognition: SpeechRecognition
+  private state: IRecognitionState;
+  private speechRecognition: SpeechRecognition;
 
   constructor(
     private onChangeCallback: (input?: string) => any = noop,
     private onEndCallback: (input?: string) => any = noop,
     private onStopCallback: () => any = noop,
-    private lang: string = 'en'
+    private lang: string = "en"
   ) {
-    if (!Recognition.instance) {
-      Recognition.instance = this
-    }
     this.state = {
-      speaking: false,
+      listening: false,
       force: false,
-      inputValue: ''
-    }
+      inputValue: ""
+    };
 
-    this.onResult = this.onResult.bind(this)
-    this.onEnd = this.onEnd.bind(this)
-    this.onStart = this.onStart.bind(this)
+    this.onResult = this.onResult.bind(this);
+    this.onEnd = this.onEnd.bind(this);
+    this.onStart = this.onStart.bind(this);
 
-    this.setup()
+    this.setup();
 
-    return Recognition.instance
+    return this;
   }
 
   static getSpeechRecognition(): SpeechRecognitionStatic {
     const {
       webkitSpeechRecognition: SpeechRecognition
-    }: IWindow = window as IWindow
+    }: IWindow = window as IWindow;
 
-    return SpeechRecognition
+    return SpeechRecognition;
   }
 
   static isSupported() {
-    return 'webkitSpeechRecognition' in window
+    return "webkitSpeechRecognition" in window;
   }
 
   public setup(): Recognition {
-    const SpeechRecognition = Recognition.getSpeechRecognition()
-    this.speechRecognition = new SpeechRecognition()
-    this.speechRecognition.continuous = true
-    this.speechRecognition.interimResults = true
-    this.speechRecognition.lang = this.lang
-    this.speechRecognition.onresult = this.onResult
-    this.speechRecognition.onend = this.onEnd
-    this.speechRecognition.onstart = this.onStart
-    return this
+    const SpeechRecognition = Recognition.getSpeechRecognition();
+    this.speechRecognition = new SpeechRecognition();
+    this.speechRecognition.continuous = true;
+    this.speechRecognition.interimResults = true;
+    this.speechRecognition.lang = this.lang;
+    this.speechRecognition.onresult = this.onResult;
+    this.speechRecognition.onend = this.onEnd;
+    this.speechRecognition.onstart = this.onStart;
+    return this;
   }
 
   public setLang(lang: string): Recognition {
-    this.lang = lang
-    return this
+    this.lang = lang;
+    return this;
   }
 
-  public speak(): Recognition {
-    const { speaking } = this.state
-    if (!speaking) {
-      this.state.inputValue = ''
-      this.speechRecognition.start()
+  public listen(): Recognition {
+    const { listening } = this.state;
+    if (!listening) {
+      this.state.inputValue = "";
+      this.speechRecognition.start();
     }
-    return this
+    return this;
   }
 
   public stop(): Recognition {
-    const { speaking } = this.state
-    if (speaking) {
-      this.state.force = true
-      this.speechRecognition.stop()
+    const { listening } = this.state;
+    if (listening) {
+      this.state.force = true;
+      this.speechRecognition.stop();
     }
-    return this
+    return this;
   }
 
   private onStart() {
-    this.state.speaking = true
+    this.state.listening = true;
   }
 
   private onChange(interimTranscript: string) {
-    this.state.inputValue = interimTranscript
-    this.onChangeCallback(this.state.inputValue)
+    this.state.inputValue = interimTranscript;
+    this.onChangeCallback(this.state.inputValue);
   }
 
   private onFinal(finalTranscript: string) {
-    this.state.inputValue = finalTranscript
-    this.speechRecognition.stop()
+    this.state.inputValue = finalTranscript;
+    this.speechRecognition.stop();
   }
 
   private onEnd() {
-    const { force, inputValue } = this.state
-    this.state.speaking = false
+    const { force, inputValue } = this.state;
+    this.state.listening = false;
     if (force) {
-      this.state.force = false
-      this.onStopCallback()
+      this.state.force = false;
+      this.onStopCallback();
     } else {
-      this.onChangeCallback(inputValue)
-      this.onEndCallback(inputValue)
+      this.onChangeCallback(inputValue);
+      this.onEndCallback(inputValue);
     }
   }
 
   private onResult(event: SpeechRecognitionEvent) {
-    let interimTranscript = ''
-    let finalTranscript = ''
+    let interimTranscript = "";
+    let finalTranscript = "";
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
-        finalTranscript += event.results[i][0].transcript
-        this.onFinal(finalTranscript)
+        finalTranscript += event.results[i][0].transcript;
+        this.onFinal(finalTranscript);
       } else {
-        interimTranscript += event.results[i][0].transcript
-        this.onChange(interimTranscript)
+        interimTranscript += event.results[i][0].transcript;
+        this.onChange(interimTranscript);
       }
     }
   }
