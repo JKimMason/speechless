@@ -25,7 +25,7 @@ export class SpeechRecognitionMock implements SpeechRecognition {
   public onstart: (ev: Event) => any;
   public onend: (ev: Event) => any;
 
-  private started: boolean;
+  public started: boolean;
 
   addEventListener(
     type: string,
@@ -67,6 +67,7 @@ export class SpeechRecognitionMock implements SpeechRecognition {
     // Create and dispatch an event
     const event = document.createEvent("CustomEvent");
     event.initCustomEvent("end", false, false, null);
+
     this.onend(event);
   }
   say(results: SpeechRecognitionResultList, resultIndex: number = 0) {

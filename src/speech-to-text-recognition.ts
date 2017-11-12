@@ -90,8 +90,6 @@ export class Recognition implements IRecognition {
     const { speaking } = this.state;
     if (speaking) {
       this.state.force = true;
-      console.log('stop', this.state);
-
       this.speechRecognition.stop();
     }
     return this;
@@ -114,13 +112,12 @@ export class Recognition implements IRecognition {
   private onEnd() {
     const { force, inputValue } = this.state;
     this.state.speaking = false;
-    console.log('onEnd', this.state);
-
     if (force) {
       this.state.force = false;
       this.onStopCallback();
     } else {
       this.onChangeCallback(inputValue);
+      console.log('wow')
       this.onEndCallback(inputValue);
     }
   }

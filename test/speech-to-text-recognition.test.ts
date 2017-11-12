@@ -1,19 +1,27 @@
-import { Recognition, IRecognitionState, IRecognition } from "../src/speech-to-text-recognition";
+import {
+  Recognition,
+  IRecognitionState,
+  IRecognition
+} from "../src/speech-to-text-recognition";
 import {
   SpeechRecognitionStaticMock,
   SpeechRecognitionMock
 } from "./__mocks__/webkitSpeechRecognition";
 import { oneSentence } from "./__mocks__/reslutsLists";
 
-let recognition : IRecognition;
+let recognition: IRecognition;
+let speechRecognition: SpeechRecognitionMock;
 
 describe("Recognition", () => {
   beforeEach(() => {
-    delete window.webkitSpeechRecognition;    
     window.webkitSpeechRecognition = SpeechRecognitionMock;
     recognition = new Recognition();
     recognition.setup();
-    
+    speechRecognition = (recognition as any).speechRecognition;
+  });
+  afterEach(() => {
+    delete window.webkitSpeechRecognition;
+    Recognition.instance = null;
   });
   it("should be supported", () => {
     expect(Recognition.isSupported()).toBeTruthy();
@@ -25,20 +33,24 @@ describe("Recognition", () => {
   });
 
   it("should set it lang", () => {
-    const langBefore :string = (recognition as any).lang;    
-    expect(langBefore).toEqual('en');
-    recognition.setLang('it')
-    const langAfter :string = (recognition as any).lang;
-    expect(langAfter).toEqual('it');
+    const langBefore: string = (recognition as any).lang;
+    expect(langBefore).toEqual("en");
+    recognition.setLang("it");
+    const langAfter: string = (recognition as any).lang;
+    expect(langAfter).toEqual("it");
+  });
+
+  it("should be singletone", () => {
+    const recognition2 = new Recognition();
+    expect(recognition2).toEqual(recognition);
   });
 
   it("should call onChange", () => {
-    const spy = jest.spyOn((recognition as any), "onChangeCallback");
-    spy.mockReset();
+    const spy = jest.spyOn(recognition as any, "onChangeCallback");
     recognition.speak();
-    (recognition as any).speechRecognition.say(oneSentence("hi are"));
-    (recognition as any).speechRecognition.say(oneSentence("hi are you"));
-    (recognition as any).speechRecognition.say(oneSentence("hi are you doing here", true));
+    speechRecognition.say(oneSentence("hi are"));
+    speechRecognition.say(oneSentence("hi are you"));
+    speechRecognition.say(oneSentence("hi are you doing here", true));
 
     expect(spy).toBeCalledWith("hi are");
     expect(spy).toBeCalledWith("hi are you");
@@ -46,37 +58,79 @@ describe("Recognition", () => {
   });
 
   it("should call end ", () => {
-    const spyEnd = jest.spyOn((recognition as any), "onEndCallback");
-    spyEnd.mockReset()
+    const spyEnd = jest.spyOn(recognition as any, "onEndCallback");
     recognition.speak();
-    (recognition as any).speechRecognition.say(oneSentence("hi are"));
-    (recognition as any).speechRecognition.say(oneSentence("hi are you"));
-    (recognition as any).speechRecognition.say(oneSentence("hi are you doing here", true));
+    speechRecognition.say(oneSentence("hi are"));
+    speechRecognition.say(oneSentence("hi are you"));
+    speechRecognition.say(oneSentence("hi are you doing here", true));
 
     expect(spyEnd).toBeCalledWith("hi are you doing here");
   });
 
   it("should not call end ", () => {
-    const spyEnd = jest.spyOn((recognition as any), "onEndCallback");
-    spyEnd.mockReset()
+    const spyEnd = jest.spyOn(recognition as any, "onEndCallback");
     recognition.speak();
-    (recognition as any).speechRecognition.say(oneSentence("hi are"));
-    (recognition as any).speechRecognition.say(oneSentence("hi are you"));
+
+    speechRecognition.say(oneSentence("hi are"));
+    speechRecognition.say(oneSentence("hi are you"));
     expect(spyEnd).not.toBeCalled();
   });
 
-  it("should call stop ", () => {
-    const spyEnd = jest.spyOn((recognition as any), "onEndCallback");
-    spyEnd.mockReset()
-    
-    const spyStop = jest.spyOn((recognition as any), "onStopCallback");
-    spyStop.mockReset()
-    
+  it("should not start a runnig recognition ", () => {
+    const spy = jest.spyOn(speechRecognition, "start");
+
     recognition.speak();
-    (recognition as any).speechRecognition.say(oneSentence("hi are"));
-    (recognition as any).speechRecognition.say(oneSentence("hi are you"));
+    expect(spy).toBeCalled();
+    recognition.speak();
+    expect(spy.mock.calls.length).toEqual(1);
+  });
+
+  it("should not stop a stopped recognition ", () => {
+    const spy = jest.spyOn(speechRecognition, "stop");
+
     recognition.stop();
-    // expect(spyEnd).not.toBeCalled();
+    expect(spy).not.toBeCalled();
+  });
+
+  it("should call stop ", () => {
+    const spyEnd = jest.spyOn(recognition as any, "onEndCallback");
+    const spyStop = jest.spyOn(recognition as any, "onStopCallback");
+
+    recognition.speak();
+    speechRecognition.say(oneSentence("hi are"));
+    speechRecognition.say(oneSentence("hi are you"));
+    recognition.stop();
+    expect(spyEnd).not.toBeCalled();
     expect(spyStop).toBeCalled();
+  });
+
+  it("should call the callbacks ", () => {
+    const onEndCallback = jest.fn();
+    const onChangeCallback = jest.fn();
+    const onStopCallback = jest.fn();
+    Recognition.instance = null;
+    recognition = new Recognition(
+      onChangeCallback,
+      onEndCallback,
+      onStopCallback,
+      "he"
+    );
+    speechRecognition = (recognition as any).speechRecognition;
+    expect((recognition as any).lang).toEqual("he");
+    recognition.speak();
+    speechRecognition.say(oneSentence("hi are"));
+    speechRecognition.say(oneSentence("hi are you"));
+    speechRecognition.say(oneSentence("hi are you doing here", true));
+
+    expect(onEndCallback).toBeCalledWith("hi are you doing here");
+
+    expect(onChangeCallback).toBeCalledWith("hi are");
+    expect(onChangeCallback).toBeCalledWith("hi are you");
+    expect(onChangeCallback).toBeCalledWith("hi are you doing here");
+
+    recognition.speak();
+    recognition.stop();
+
+    expect(onStopCallback).toBeCalled();
   });
 });
