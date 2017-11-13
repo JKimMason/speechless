@@ -1,93 +1,87 @@
 {
-  "name": "speech-to-text-recognition",
-  "version": "0.0.1",
-  "description": "",
-  "keywords": [],
-  "main": "dist/speech-to-text-recognition.umd.js",
-  "module": "dist/speech-to-text-recognition.es5.js",
-  "typings": "dist/types/speech-to-text-recognition.d.ts",
-  "files": [
-    "dist"
-  ],
-  "author": "Shy <puemos@gmail.com>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/puemos/speech-to-text-recognition.git"
-  },
-  "license": "MIT",
-  "engines": {
-    "node": ">=6.0.0"
-  },
-  "scripts": {
-    "precommit": "lint-staged",
-    "prepush": "npm run test:prod && npm run build",
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
-    "build": "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
-    "start": "tsc -w & rollup -c rollup.config.ts -w",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls"
-  },
-  "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write --no-semi --single-quote",
-      "git add"
-    ]
-  },
-  "jest": {
-    "setupFiles": [
-      "./test/setup/setup.js"
+    "name": "speech-to-text-recognition",
+    "version": "0.0.1",
+    "description": "",
+    "keywords": [
+        "speech",
+        "speech-to-text",
+        "text",
+        "recognition",
+        "speech-recognition",
+        "speechRecognition"
     ],
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    "main": "dist/speech-to-text-recognition.umd.js",
+    "module": "dist/speech-to-text-recognition.es5.js",
+    "typings": "dist/types/speech-to-text-recognition.d.ts",
+    "files": ["dist"],
+    "author": "Shy <puemos@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/puemos/speech-to-text-recognition.git"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
-      }
+    "license": "MIT",
+    "engines": {
+        "node": ">=6.0.0"
     },
-    "collectCoverage": true,
-    "mapCoverage": true
-  },
-  "devDependencies": {
-    "@types/jest": "21.1.6",
-    "@types/node": "8.0.0",
-    "@types/webspeechapi": "0.0.28",
-    "coveralls": "3.0.0",
-    "cross-env": "5.1.1",
-    "husky": "0.14.3",
-    "jest": "21.2.1",
-    "jsdom": "11.3.0",
-    "lint-staged": "5.0.0",
-    "lodash.camelcase": "4.3.0",
-    "prettier": "1.8.2",
-    "rimraf": "2.6.1",
-    "rollup": "0.51.5",
-    "rollup-plugin-commonjs": "8.2.6",
-    "rollup-plugin-node-resolve": "3.0.0",
-    "rollup-plugin-sourcemaps": "0.4.2",
-    "ts-jest": "21.2.2",
-    "tslint": "5.8.0",
-    "tslint-config-prettier": "1.6.0",
-    "tslint-config-standard": "7.0.0",
-    "typedoc": "0.9.0",
-    "typescript": "2.6.1"
-  },
-  "dependencies": {}
+    "scripts": {
+        "precommit": "lint-staged",
+        "prepush": "npm run test:prod && npm run build",
+        "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+        "prebuild": "rimraf dist",
+        "build":
+            "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+        "start": "tsc -w & rollup -c rollup.config.ts -w",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+        "deploy-docs": "ts-node tools/gh-pages-publish",
+        "report-coverage": "cat ./coverage/lcov.info | coveralls"
+    },
+    "lint-staged": {
+        "{src,test}/**/*.ts": ["prettier --write --no-semi --single-quote", "git add"]
+    },
+    "jest": {
+        "setupFiles": ["./test/setup/setup.js"],
+        "transform": {
+            ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+        "moduleFileExtensions": ["ts", "tsx", "js"],
+        "coveragePathIgnorePatterns": ["/node_modules/", "/test/"],
+        "coverageThreshold": {
+            "global": {
+                "branches": 90,
+                "functions": 95,
+                "lines": 95,
+                "statements": 95
+            }
+        },
+        "collectCoverage": true,
+        "mapCoverage": true
+    },
+    "devDependencies": {
+        "@types/jest": "21.1.6",
+        "@types/node": "8.0.0",
+        "@types/webspeechapi": "0.0.28",
+        "coveralls": "3.0.0",
+        "cross-env": "5.1.1",
+        "husky": "0.14.3",
+        "jest": "21.2.1",
+        "jsdom": "11.3.0",
+        "lint-staged": "5.0.0",
+        "lodash.camelcase": "4.3.0",
+        "prettier": "1.8.2",
+        "rimraf": "2.6.1",
+        "rollup": "0.51.5",
+        "rollup-plugin-commonjs": "8.2.6",
+        "rollup-plugin-node-resolve": "3.0.0",
+        "rollup-plugin-sourcemaps": "0.4.2",
+        "ts-jest": "21.2.2",
+        "tslint": "5.8.0",
+        "tslint-config-prettier": "1.6.0",
+        "tslint-config-standard": "7.0.0",
+        "typedoc": "0.9.0",
+        "typescript": "2.6.1"
+    },
+    "dependencies": {}
 }
