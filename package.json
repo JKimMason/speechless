@@ -1,7 +1,7 @@
 {
     "name": "speech-to-text-recognition",
     "version": "0.0.2",
-    "description": "",
+    "description": "Speech to text recognition tool that simplify the API",
     "keywords": [
         "speech",
         "speech-to-text",
