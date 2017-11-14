@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "dist/speech-to-text-recognition.umd.js",
   "module": "dist/speech-to-text-recognition.es5.js",
-  "typings": "dist/types/speech-to-text-recognition.d.ts",
+  "typings": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -75,12 +75,10 @@
   },
   "devDependencies": {
     "@types/jest": "^21.1.0",
-    "@types/node": "^8.0.0",
+    "@types/node": "^8.0.52",
     "colors": "^1.1.2",
-    "commitizen": "^2.9.6",
     "coveralls": "^3.0.0",
     "cross-env": "^5.0.1",
-    "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.14.0",
     "jest": "^21.0.0",
     "jsdom": "^11.3.0",
@@ -94,7 +92,6 @@
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
-    "semantic-release": "^8.2.0",
     "ts-jest": "^21.0.0",
     "ts-node": "^3.0.6",
     "tslint": "^5.4.3",

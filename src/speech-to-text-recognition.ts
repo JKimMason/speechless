@@ -4,11 +4,19 @@ export interface IRecognitionState {
   force: boolean;
 }
 
-export interface IRecognition {
+export interface IRecognitionEventListener extends EventListener {
+  (event?: string|void) :any
+}
+
+export interface IRecognition extends EventTarget {
   setup(): IRecognition;
   setLang(lang: string): IRecognition;
   listen(): void;
   stop(): void;
+
+  onended:IRecognitionEventListener
+  onstoped:IRecognitionEventListener
+  onchanged:IRecognitionEventListener
 }
 
 export interface IWindow extends Window {
@@ -22,13 +30,9 @@ function noop(): void {
 export class Recognition implements IRecognition {
   private state: IRecognitionState;
   private speechRecognition: SpeechRecognition;
+  private listeners: { [key: string]: ()[] };
 
-  constructor(
-    private onChangeCallback: (input?: string) => any = noop,
-    private onEndCallback: (input?: string) => any = noop,
-    private onStopCallback: () => any = noop,
-    private lang: string = "en"
-  ) {
+  constructor(private lang = "en") {
     this.state = {
       listening: false,
       force: false,
@@ -89,6 +93,44 @@ export class Recognition implements IRecognition {
       this.speechRecognition.stop();
     }
     return this;
+  }
+
+  public addEventListener(
+    type: string,
+    listener?: EventListener | EventListenerObject | undefined,
+  ): void {
+    if (!(type in this.listeners)) {
+      this.listeners[type] = [];
+    }
+    this.listeners[type].push(listener);
+  }
+
+  public dispatchEvent(evt: Event): boolean {
+    if (!(event.type in this.listeners)) {
+      return true;
+    }
+    var stack = this.listeners[event.type];
+
+    for (var i = 0, l = stack.length; i < l; i++) {
+      stack[i].call(this, event);
+    }
+    return !event.defaultPrevented;
+  }
+
+  public removeEventListener(
+    type: string,
+    listener?: EventListener | EventListenerObject | undefined,
+  ): void {
+    if (!(type in this.listeners)) {
+      return;
+    }
+    var stack = this.listeners[type];
+    for (var i = 0, l = stack.length; i < l; i++) {
+      if (stack[i] === callback) {
+        stack.splice(i, 1);
+        return;
+      }
+    }
   }
 
   private onStart() {
