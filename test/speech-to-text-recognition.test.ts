@@ -1,8 +1,4 @@
-import {
-  Recognition,
-  IRecognitionState,
-  IRecognition
-} from '../src/speech-to-text-recognition'
+import Recognition, { IRecognition } from '../src/speech-to-text-recognition'
 import {
   SpeechRecognitionStaticMock,
   SpeechRecognitionMock

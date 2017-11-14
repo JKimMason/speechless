@@ -33,7 +33,7 @@ export interface IWindow extends Window {
   webkitSpeechRecognition: SpeechRecognitionStatic
 }
 
-export class Recognition implements IRecognition {
+export default class Recognition implements IRecognition {
   private state: IRecognitionState
   private speechRecognition: SpeechRecognition
   private listeners: {

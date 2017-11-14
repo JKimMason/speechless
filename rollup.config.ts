@@ -10,7 +10,7 @@ const libraryName = 'speech-to-text-recognition'
 export default {
   input: `compiled/${libraryName}.js`,
   output: [
-    { file: pkg.main, name: camelCase(libraryName), format: 'umd' },
+    { file: pkg.main, name: 'Recognition', format: 'umd' },
     { file: pkg.module, format: 'es' },
   ],
   sourcemap: true,
