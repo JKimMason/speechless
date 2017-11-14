@@ -1,4 +1,4 @@
-# Speech to Text recognition service
+# Speech to text recognition tool that's simplified the API
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Greenkeeper badge](https://badges.greenkeeper.io/puemos/speech-to-text-recognition.svg)](https://greenkeeper.io/)
