@@ -68,7 +68,7 @@ export default class Recognition implements IRecognition {
     this.gotStream = this.gotStream.bind(this)
 
     this.setup()
-    this.startRecording()
+    // this.startRecording()
     return this
   }
 
