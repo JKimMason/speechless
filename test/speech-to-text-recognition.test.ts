@@ -1,4 +1,7 @@
-import Recognition, { IRecognition } from '../src/speech-to-text-recognition'
+import Recognition, {
+  IRecognition,
+  IWindow
+} from '../src/speech-to-text-recognition'
 import {
   SpeechRecognitionStaticMock,
   SpeechRecognitionMock
@@ -10,9 +13,10 @@ let speechRecognition: SpeechRecognitionMock
 let onEndCallback = jest.fn()
 let onChangeCallback = jest.fn()
 let onStopCallback = jest.fn()
+
 describe('Recognition', () => {
   beforeEach(() => {
-    window.webkitSpeechRecognition = SpeechRecognitionMock
+    ;(window as IWindow).webkitSpeechRecognition = SpeechRecognitionMock
     recognition = new Recognition()
     recognition.setup()
     recognition.addEventListener('ended', onEndCallback)
@@ -22,7 +26,7 @@ describe('Recognition', () => {
   })
 
   afterEach(() => {
-    delete window.webkitSpeechRecognition
+    delete (window as IWindow).webkitSpeechRecognition
     onEndCallback.mockReset()
     onChangeCallback.mockReset()
     onStopCallback.mockReset()
@@ -33,7 +37,7 @@ describe('Recognition', () => {
   })
 
   it('should not be supported', () => {
-    delete window.webkitSpeechRecognition
+    delete (window as IWindow).webkitSpeechRecognition
     expect(Recognition.isSupported()).toBeFalsy()
   })
 
