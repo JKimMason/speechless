@@ -1,4 +1,4 @@
-import { Event } from '_debugger'
+import Recorder from './recorder'
 
 export interface IRecognitionState {
   inputValue: string
@@ -6,8 +6,16 @@ export interface IRecognitionState {
   force: boolean
 }
 
+export interface IRecognitionMap {
+  changed: IRecognitionEvent
+  ended: IRecognitionEvent
+  stopped: IRecognitionEvent
+  recording: IRecognitionEvent
+  sending: IRecognitionEvent
+}
+
 export interface IRecognitionEvent {
-  type: 'changed' | 'ended' | 'stopped'
+  type: string
   body?: string
 }
 
@@ -20,10 +28,15 @@ export interface IRecognition {
   setLang(lang: string): IRecognition
   listen(): void
   stop(): void
-
-  addEventListener(type: string, listener: IRecognitionEventListener): void
+  addEventListener<K extends keyof IRecognitionMap>(
+    type: K,
+    listener: IRecognitionEventListener
+  ): void
+  removeEventListener<K extends keyof IRecognitionMap>(
+    type: K,
+    listener: IRecognitionEventListener
+  ): void
   dispatchEvent(event: IRecognitionEvent): boolean
-  removeEventListener(type: string, listener: IRecognitionEventListener): void
   // onended(): IRecognitionEventListener;
   // onstopped(): IRecognitionEventListener;
   // onchanged(): IRecognitionEventListener;
@@ -33,12 +46,14 @@ export interface IWindow extends Window {
   webkitSpeechRecognition: SpeechRecognitionStatic
 }
 
-export class Recognition implements IRecognition {
+export default class Recognition implements IRecognition {
   private state: IRecognitionState
   private speechRecognition: SpeechRecognition
   private listeners: {
     [key: string]: IRecognitionEventListener[]
   }
+  private audioContext: AudioContext
+  private audioRecorder: any
 
   constructor(private lang = 'en') {
     this.state = {
@@ -50,9 +65,10 @@ export class Recognition implements IRecognition {
     this.onSpeechRecognitionResult = this.onSpeechRecognitionResult.bind(this)
     this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
     this.onSpeechRecognitionStart = this.onSpeechRecognitionStart.bind(this)
+    this.gotStream = this.gotStream.bind(this)
 
     this.setup()
-
+    // this.startRecording()
     return this
   }
 
@@ -68,12 +84,71 @@ export class Recognition implements IRecognition {
     return 'webkitSpeechRecognition' in window
   }
 
-  public addEventListener(
-    type: 'changed' | 'ended' | 'stopped',
+  getNavigator(): Navigator {
+    if (!(navigator as any).getUserMedia) {
+      ;(navigator as any).getUserMedia =
+        (navigator as any).webkitGetUserMedia ||
+        (navigator as any).mozGetUserMedia ||
+        (navigator as any).mediaDevices.getUserMedia
+    }
+
+    return navigator as Navigator
+  }
+  startRecording() {
+    const navigator = this.getNavigator()
+    navigator.getUserMedia(
+      {
+        audio: {
+          advanced: [
+            {
+              echoCancelation: false
+            }
+          ]
+        }
+      },
+      this.gotStream,
+      console.error
+    )
+  }
+  gotStream(stream: MediaStream) {
+    this.audioContext = this.audioContext || new AudioContext()
+
+    const inputPoint = this.audioContext.createGain()
+    // Create an AudioNode from the stream.
+    const realAudioInput = this.audioContext.createMediaStreamSource(stream)
+    const audioInput = realAudioInput
+    audioInput.connect(inputPoint)
+
+    const analyserNode = this.audioContext.createAnalyser()
+    analyserNode.fftSize = 2048
+    inputPoint.connect(analyserNode)
+    // Direclty from window.Recorder
+    this.audioRecorder = new Recorder(inputPoint)
+    const zeroGain = this.audioContext.createGain()
+    zeroGain.gain.value = 0.0
+    inputPoint.connect(zeroGain)
+    zeroGain.connect(this.audioContext.destination)
+    this.audioRecorder.record()
+  }
+
+  public addEventListener<K extends keyof IRecognitionMap>(
+    type: K,
     listener: IRecognitionEventListener
   ): void {
     this.listeners[type] = this.listeners[type] || []
     this.listeners[type].push(listener)
+  }
+
+  public removeEventListener<K extends keyof IRecognitionMap>(
+    type: K,
+    listener: IRecognitionEventListener
+  ): void {
+    if (!(type in this.listeners)) {
+      return
+    }
+    this.listeners[type] = this.listeners[type].filter(
+      callback => callback !== listener
+    )
   }
 
   public dispatchEvent(event: IRecognitionEvent): boolean {
@@ -84,18 +159,6 @@ export class Recognition implements IRecognition {
       callback.call(this, event)
     })
     return true
-  }
-
-  public removeEventListener(
-    type: 'changed' | 'ended' | 'stopped',
-    listener: IRecognitionEventListener
-  ): void {
-    if (!(type in this.listeners)) {
-      return
-    }
-    this.listeners[type] = this.listeners[type].filter(
-      callback => callback !== listener
-    )
   }
 
   public setup(): Recognition {

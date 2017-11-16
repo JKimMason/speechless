@@ -1,7 +1,6 @@
-import {
-  Recognition,
-  IRecognitionState,
-  IRecognition
+import SpeechToTextRecognition, {
+  IRecognition,
+  IWindow
 } from '../src/speech-to-text-recognition'
 import {
   SpeechRecognitionStaticMock,
@@ -9,15 +8,16 @@ import {
 } from './__mocks__/webkitSpeechRecognition'
 import { oneSentence } from './__mocks__/reslutsLists'
 
-let recognition: IRecognition
+let recognition: SpeechToTextRecognition
 let speechRecognition: SpeechRecognitionMock
 let onEndCallback = jest.fn()
 let onChangeCallback = jest.fn()
 let onStopCallback = jest.fn()
+
 describe('Recognition', () => {
   beforeEach(() => {
-    window.webkitSpeechRecognition = SpeechRecognitionMock
-    recognition = new Recognition()
+    ;(window as IWindow).webkitSpeechRecognition = SpeechRecognitionMock
+    recognition = new SpeechToTextRecognition()
     recognition.setup()
     recognition.addEventListener('ended', onEndCallback)
     recognition.addEventListener('changed', onChangeCallback)
@@ -26,19 +26,19 @@ describe('Recognition', () => {
   })
 
   afterEach(() => {
-    delete window.webkitSpeechRecognition
+    delete (window as IWindow).webkitSpeechRecognition
     onEndCallback.mockReset()
     onChangeCallback.mockReset()
     onStopCallback.mockReset()
   })
 
   it('should be supported', () => {
-    expect(Recognition.isSupported()).toBeTruthy()
+    expect(SpeechToTextRecognition.isSupported()).toBeTruthy()
   })
 
   it('should not be supported', () => {
-    delete window.webkitSpeechRecognition
-    expect(Recognition.isSupported()).toBeFalsy()
+    delete (window as IWindow).webkitSpeechRecognition
+    expect(SpeechToTextRecognition.isSupported()).toBeFalsy()
   })
 
   it('should set it lang', () => {
@@ -118,7 +118,7 @@ describe('Recognition', () => {
     const onEndCallback = jest.fn()
     const onChangeCallback = jest.fn()
     const onStopCallback = jest.fn()
-    recognition = new Recognition('he')
+    recognition = new SpeechToTextRecognition('he')
 
     recognition.addEventListener('ended', onEndCallback)
     recognition.addEventListener('changed', onChangeCallback)
