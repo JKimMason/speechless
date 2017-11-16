@@ -30,8 +30,8 @@
         "prepush": "npm run test:prod && npm run build",
         "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
         "prebuild": "rimraf dist",
-        "build": "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
-        "start": "tsc -w & rollup -c rollup.config.ts -w",
+        "build": "tsc && webpack  && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+        "start": "tsc -w & webpack -w",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
@@ -84,17 +84,16 @@
         "lint-staged": "5.0.0",
         "prettier": "1.8.2",
         "rimraf": "2.6.1",
-        "rollup": "0.51.5",
-        "rollup-plugin-commonjs": "^8.2.6",
-        "rollup-plugin-file-as-blob": "^1.1.2",
-        "rollup-plugin-node-resolve": "3.0.0",
-        "rollup-plugin-sourcemaps": "0.4.2",
         "ts-jest": "21.2.2",
+        "ts-loader": "^3.1.1",
         "tslint": "5.8.0",
         "tslint-config-prettier": "1.6.0",
         "tslint-config-standard": "7.0.0",
         "typedoc": "0.9.0",
-        "typescript": "2.6.1"
+        "typescript": "2.6.1",
+        "uglifyjs-webpack-plugin": "^1.0.1",
+        "webpack": "^3.8.1",
+        "webpack-config-utils": "^2.3.0"
     },
     "dependencies": {}
 }
