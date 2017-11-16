@@ -11,7 +11,6 @@ const PATHS = {
     umd: resolve(__dirname, 'dist')
 }
 
-console.log(PATHS.umd)
 const DEFAULT_ENV = 'dev'
 
 const EXTERNALS = {}

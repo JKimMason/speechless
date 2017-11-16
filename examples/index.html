@@ -136,7 +136,7 @@
     <script>
         $(document)
             .ready(function () {
-                var recognition = new SpeechToTextRecognition();
+                var recognition = new SpeechToTextRecognition.default();
                 function onChange({ body }) {
                     $("#say-someting").text(body)
                 }
