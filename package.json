@@ -30,7 +30,7 @@
         "prepush": "npm run test:prod && npm run build",
         "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
         "prebuild": "rimraf dist",
-        "build": "tsc && webpack  && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+        "build": "tsc && webpack && webpack --env.prod && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
         "start": "tsc -w & webpack -w",
         "test": "jest",
         "test:watch": "jest --watch",
