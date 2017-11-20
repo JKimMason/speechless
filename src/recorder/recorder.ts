@@ -1,6 +1,6 @@
-import * as Worker from './recorder.worker'
+const Worker = require('worker-loader!./recorder.worker')
 
-class Recorder {
+export class Recorder {
   private recording: boolean
   private bufferLen: number
   private context: AudioContext
@@ -14,7 +14,7 @@ class Recorder {
     }
   ) {
     this.onAudioProcess = this.onAudioProcess.bind(this)
-    this.worker = new Worker()
+    this.worker = Worker()
     this.recording = false
     this.bufferLen = 4096
     this.context = source.context

@@ -1,5 +1,4 @@
-const Worker = require('worker-loader!./Worker')
-
+import { Recorder } from './recorder/recorder'
 import { AbstractRecognition } from './index'
 
 export interface IExternalRecognitionState {
@@ -13,7 +12,6 @@ export default class ExternalRecognition extends AbstractRecognition {
   private state: IExternalRecognitionState
   private audioContext: AudioContext
   private audioRecorder: any
-  private worker: Worker
   constructor() {
     super()
     this.state = {
@@ -21,7 +19,6 @@ export default class ExternalRecognition extends AbstractRecognition {
       force: false,
       inputValue: ''
     }
-    this.worker = Worker()
     this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
     this.onSpeechRecognitionStart = this.onSpeechRecognitionStart.bind(this)
     this.onGotStream = this.onGotStream.bind(this)
