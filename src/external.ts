@@ -89,7 +89,7 @@ export default class ExternalRecognition extends AbstractRecognition {
     const { recording } = this.state
     if (recording) {
       this.state.force = true
-      this.speechRecognition.stop()
+      this.audioRecorder.stop()
     }
     return this
   }

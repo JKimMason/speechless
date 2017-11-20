@@ -4,7 +4,7 @@ export class Recorder {
   private recording: boolean
   private bufferLen: number
   private context: AudioContext
-  private node: ScriptProcessorNode
+  private scriptNode: ScriptProcessorNode
   private worker: Worker
 
   constructor(
@@ -17,12 +17,19 @@ export class Recorder {
     this.worker = Worker()
     this.recording = false
     this.bufferLen = 4096
-    this.context = source.context
-    this.node = this.context.createScriptProcessor(this.bufferLen, 2, 2)
-    source.connect(this.node)
-    this.node.connect(this.context.destination)
-    this.node.addEventListener('audioprocess', this.onAudioProcess)
-    recorderUtils.init(this.context.sampleRate)
+    this.context = this.source.context
+    this.scriptNode = this.context.createScriptProcessor(this.bufferLen, 2, 2)
+    this.source.connect(this.scriptNode)
+    this.scriptNode.connect(this.context.destination)
+    this.scriptNode.addEventListener('audioprocess', this.onAudioProcess)
+
+    this.worker.addEventListener('message', this.onWorkerMessage)
+    this.worker.postMessage({
+      command: 'init',
+      payload: {
+        sampleRate: this.context.sampleRate
+      }
+    })
   }
 
   onWorkerMessage(ev: MessageEvent) {
@@ -33,11 +40,15 @@ export class Recorder {
     if (!this.recording) {
       return
     }
-    const res = recorderUtils.record([
-      ev.inputBuffer.getChannelData(0),
-      ev.inputBuffer.getChannelData(1)
-    ])
-    this.currCallback(res)
+    this.worker.postMessage({
+      command: 'record',
+      payload: {
+        buffer: [
+          ev.inputBuffer.getChannelData(0),
+          ev.inputBuffer.getChannelData(1)
+        ]
+      }
+    })
   }
   record() {
     this.recording = true
@@ -45,28 +56,35 @@ export class Recorder {
 
   stop() {
     this.recording = false
+    this.source.disconnect(this.scriptNode)
+    this.scriptNode.disconnect(this.context.destination)
   }
 
   clear() {
-    recorderUtils.clear()
+    this.worker.postMessage({
+      command: 'clear'
+    })
   }
 
   getBuffer(cb: () => any) {
     this.currCallback = cb
-    const res = recorderUtils.getBuffer()
-    this.currCallback(res)
+    this.worker.postMessage({ command: 'getBuffer' })
   }
 
   exportWAV(cb: () => any, type: string = 'audio/wav') {
     this.currCallback = cb
-    const res = recorderUtils.exportWAV(type)
-    this.currCallback(res)
+    this.worker.postMessage({
+      command: 'exportWAV',
+      payload: { type }
+    })
   }
 
   exportMonoWAV(cb: () => any, type: string) {
     this.currCallback = cb
-    const res = recorderUtils.exportMonoWAV(type)
-    this.currCallback(res)
+    this.worker.postMessage({
+      command: 'exportMonoWAV',
+      payload: { type }
+    })
   }
 }
 

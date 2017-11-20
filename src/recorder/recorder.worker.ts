@@ -6,10 +6,10 @@ let recBuffersL: Float32Array[] = []
 let recBuffersR: Float32Array[] = []
 let sampleRate: number
 
-export function init(sampleRate: number): void {
+function init(sampleRate: number): void {
   sampleRate = sampleRate
 }
-export function floatTo16BitPCM(
+function floatTo16BitPCM(
   output: DataView,
   offset: number,
   input: Float32Array
@@ -20,12 +20,12 @@ export function floatTo16BitPCM(
   }
 }
 
-export function writeString(view: DataView, offset: number, type: string) {
+function writeString(view: DataView, offset: number, type: string) {
   for (let i = 0; i < type.length; i += 1) {
     view.setUint8(offset + i, type.charCodeAt(i))
   }
 }
-export function encodeWAV(samples: Float32Array, mono = false) {
+function encodeWAV(samples: Float32Array, mono = false): DataView {
   const buffer = new ArrayBuffer(44 + samples.length * 2)
   const view = new DataView(buffer)
 
@@ -60,12 +60,12 @@ export function encodeWAV(samples: Float32Array, mono = false) {
 
   return view
 }
-export function record(inputBuffer: Float32Array[]) {
+function record(inputBuffer: Float32Array[]) {
   recBuffersL.push(inputBuffer[0])
   recBuffersR.push(inputBuffer[1])
   recLength += inputBuffer[0].length
 }
-export function interleave(inputL: Float32Array, inputR: Float32Array) {
+function interleave(inputL: Float32Array, inputR: Float32Array): Float32Array {
   const length = inputL.length + inputR.length
   const result = new Float32Array(length)
 
@@ -79,7 +79,10 @@ export function interleave(inputL: Float32Array, inputR: Float32Array) {
   }
   return result
 }
-export function mergeBuffers(recBuffers: Float32Array[], recLength: number) {
+function mergeBuffers(
+  recBuffers: Float32Array[],
+  recLength: number
+): Float32Array {
   const result = new Float32Array(recLength)
   let offset = 0
   for (let i = 0; i < recBuffers.length; i += 1) {
@@ -88,31 +91,52 @@ export function mergeBuffers(recBuffers: Float32Array[], recLength: number) {
   }
   return result
 }
-export function exportWAV(type: string) {
+function exportWAV(type: string) {
   const bufferL = mergeBuffers(recBuffersL, recLength)
   const bufferR = mergeBuffers(recBuffersR, recLength)
   const interleaved = interleave(bufferL, bufferR)
   const dataview = encodeWAV(interleaved)
   const audioBlob = new Blob([dataview], { type })
 
-  return audioBlob
+  ctx.postMessage(audioBlob)
 }
 
-export function exportMonoWAV(type: string) {
+function exportMonoWAV(type: string) {
   const bufferL = mergeBuffers(recBuffersL, recLength)
   const dataview = encodeWAV(bufferL, true)
   const audioBlob = new Blob([dataview], { type })
-  return audioBlob
+  ctx.postMessage(audioBlob)
 }
-export function getBuffer() {
+function getBuffer() {
   const buffers = []
   buffers.push(mergeBuffers(recBuffersL, recLength))
   buffers.push(mergeBuffers(recBuffersR, recLength))
-  return buffers
+  ctx.postMessage(buffers)
 }
 
-export function clear() {
+function clear() {
   recLength = 0
   recBuffersL = []
   recBuffersR = []
+}
+
+ctx.onmessage = (ev: MessageEvent) => {
+  const { command, payload } = ev.data
+  switch (command) {
+    case 'init':
+      init(payload.sampleRate)
+      break
+    case 'record':
+      record(ev.data.buffer)
+      break
+    case 'exportWAV':
+      exportWAV(ev.data.type)
+      break
+    case 'getBuffer':
+      getBuffer()
+      break
+    case 'clear':
+      clear()
+      break
+  }
 }
