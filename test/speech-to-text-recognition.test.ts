@@ -2,12 +2,7 @@ import SpeechToTextRecognition, {
   IRecognition,
   IWindow
 } from '../src/speech-to-text-recognition'
-import {
-  SpeechRecognitionStaticMock,
-  SpeechRecognitionMock
-} from './__mocks__/webkitSpeechRecognition'
-import { oneSentence } from './__mocks__/reslutsLists'
-
+import { SpeechRecognitionMock } from 'speech-recognition-mock'
 let recognition: SpeechToTextRecognition
 let speechRecognition: SpeechRecognitionMock
 let onEndCallback = jest.fn()
@@ -51,9 +46,9 @@ describe('Recognition', () => {
 
   it('should call onChange', () => {
     recognition.listen()
-    speechRecognition.say(oneSentence('hi are'))
-    speechRecognition.say(oneSentence('hi are you'))
-    speechRecognition.say(oneSentence('hi are you doing here', true))
+    speechRecognition.say('hi are', false)
+    speechRecognition.say('hi are you', false)
+    speechRecognition.say('hi are you doing here', true)
 
     expect(onChangeCallback).toBeCalledWith({
       body: 'hi are',
@@ -71,9 +66,9 @@ describe('Recognition', () => {
 
   it('should call end ', () => {
     recognition.listen()
-    speechRecognition.say(oneSentence('hi are'))
-    speechRecognition.say(oneSentence('hi are you'))
-    speechRecognition.say(oneSentence('hi are you doing here', true))
+    speechRecognition.say('hi are', false)
+    speechRecognition.say('hi are you', false)
+    speechRecognition.say('hi are you doing here', true)
 
     expect(onEndCallback).toBeCalledWith({
       body: 'hi are you doing here',
@@ -84,8 +79,8 @@ describe('Recognition', () => {
   it('should not call end ', () => {
     recognition.listen()
 
-    speechRecognition.say(oneSentence('hi are'))
-    speechRecognition.say(oneSentence('hi are you'))
+    speechRecognition.say('hi are', false)
+    speechRecognition.say('hi are you', false)
     expect(onEndCallback).not.toBeCalled()
   })
 
@@ -107,8 +102,8 @@ describe('Recognition', () => {
 
   it('should call stop ', () => {
     recognition.listen()
-    speechRecognition.say(oneSentence('hi are'))
-    speechRecognition.say(oneSentence('hi are you'))
+    speechRecognition.say('hi are', false)
+    speechRecognition.say('hi are you', false)
     recognition.stop()
     expect(onEndCallback).not.toBeCalled()
     expect(onStopCallback).toBeCalled()
@@ -127,10 +122,9 @@ describe('Recognition', () => {
     speechRecognition = (recognition as any).speechRecognition
     expect((recognition as any).lang).toEqual('he')
     recognition.listen()
-    speechRecognition.say(oneSentence('hi are'))
-    speechRecognition.say(oneSentence('hi are you'))
-    speechRecognition.say(oneSentence('hi are you doing here', true))
-
+    speechRecognition.say('hi are', false)
+    speechRecognition.say('hi are you', false)
+    speechRecognition.say('hi are you doing here', true)
     expect(onEndCallback).toBeCalledWith({
       body: 'hi are you doing here',
       type: 'ended'
@@ -161,8 +155,7 @@ describe('Recognition', () => {
     recognition.removeEventListener('stopped', onStopCallback)
 
     recognition.listen()
-    speechRecognition.say(oneSentence('hi are you doing here', true))
-
+    speechRecognition.say('hi are you doing here', true)
     expect(onEndCallback).not.toBeCalled()
     expect(onChangeCallback).not.toBeCalled()
 

@@ -1,10 +1,11 @@
-import * as recorderUtils from './recorderUtils'
+import * as Worker from './recorder.worker'
 
 class Recorder {
   private recording: boolean
   private bufferLen: number
   private context: AudioContext
   private node: ScriptProcessorNode
+  private worker: Worker
 
   constructor(
     private source: GainNode,
@@ -13,7 +14,7 @@ class Recorder {
     }
   ) {
     this.onAudioProcess = this.onAudioProcess.bind(this)
-
+    this.worker = new Worker()
     this.recording = false
     this.bufferLen = 4096
     this.context = source.context

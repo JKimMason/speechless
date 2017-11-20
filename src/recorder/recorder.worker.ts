@@ -1,4 +1,5 @@
 // https://gist.github.com/amiika/5525347
+const ctx: Worker = self as any
 
 let recLength: number = 0
 let recBuffersL: Float32Array[] = []
