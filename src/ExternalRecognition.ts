@@ -1,5 +1,5 @@
 import { Recorder } from './recorder/recorder'
-import { AbstractRecognition } from './index'
+import { AbstractRecognition } from './AbstractRecognition'
 
 export interface IExternalRecognitionState {
   inputValue: string
@@ -7,13 +7,13 @@ export interface IExternalRecognitionState {
   force: boolean
 }
 
-export default class ExternalRecognition extends AbstractRecognition {
+export class ExternalRecognition extends AbstractRecognition {
   private speechRecognition: SpeechRecognition
   private state: IExternalRecognitionState
   private audioContext: AudioContext
   private audioRecorder: any
-  constructor() {
-    super()
+  constructor(lang: string) {
+    super(lang)
     this.state = {
       recording: false,
       force: false,

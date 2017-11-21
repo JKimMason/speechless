@@ -1,4 +1,4 @@
-import { AbstractRecognition, IWindow } from './index'
+import { AbstractRecognition, IWindow } from './AbstractRecognition'
 
 export interface INativeRecognitionState {
   inputValue: string
@@ -6,12 +6,12 @@ export interface INativeRecognitionState {
   force: boolean
 }
 
-export default class NativeRecognition extends AbstractRecognition {
+export class NativeRecognition extends AbstractRecognition {
   private state: INativeRecognitionState
   private speechRecognition: SpeechRecognition
 
-  constructor() {
-    super()
+  constructor(lang: string) {
+    super(lang)
     this.state = {
       listening: false,
       force: false,
