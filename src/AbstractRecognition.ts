@@ -16,7 +16,6 @@ export interface IRecognitionEventListener {
 }
 
 export interface IRecognition {
-  setup(): IRecognition
   setLang(lang: string): IRecognition
   listen(): void
   stop(): void
@@ -44,7 +43,6 @@ export abstract class AbstractRecognition implements IRecognition {
     this.listeners = {}
   }
 
-  abstract setup(): this
   abstract listen(): void
   abstract stop(): void
 

@@ -1,18 +1,18 @@
-import SpeechToTextRecognition, {
-  IRecognition,
-  IWindow
-} from '../src/speech-to-text-recognition'
 import { SpeechRecognitionMock } from 'speech-recognition-mock'
-let recognition: SpeechToTextRecognition
+
+import { NativeRecognition } from '../src'
+import { IWindow } from '../src/AbstractRecognition'
+
+let recognition: NativeRecognition
 let speechRecognition: SpeechRecognitionMock
 let onEndCallback = jest.fn()
 let onChangeCallback = jest.fn()
 let onStopCallback = jest.fn()
 
-describe('Recognition', () => {
+describe('NativeRecognition', () => {
   beforeEach(() => {
     ;(window as IWindow).webkitSpeechRecognition = SpeechRecognitionMock
-    recognition = new SpeechToTextRecognition()
+    recognition = new NativeRecognition()
     recognition.setup()
     recognition.addEventListener('ended', onEndCallback)
     recognition.addEventListener('changed', onChangeCallback)
@@ -28,12 +28,12 @@ describe('Recognition', () => {
   })
 
   it('should be supported', () => {
-    expect(SpeechToTextRecognition.isSupported()).toBeTruthy()
+    expect(NativeRecognition.isSupported()).toBeTruthy()
   })
 
   it('should not be supported', () => {
     delete (window as IWindow).webkitSpeechRecognition
-    expect(SpeechToTextRecognition.isSupported()).toBeFalsy()
+    expect(NativeRecognition.isSupported()).toBeFalsy()
   })
 
   it('should set it lang', () => {
@@ -113,7 +113,7 @@ describe('Recognition', () => {
     const onEndCallback = jest.fn()
     const onChangeCallback = jest.fn()
     const onStopCallback = jest.fn()
-    recognition = new SpeechToTextRecognition('he')
+    recognition = new NativeRecognition('he')
 
     recognition.addEventListener('ended', onEndCallback)
     recognition.addEventListener('changed', onChangeCallback)

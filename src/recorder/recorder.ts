@@ -13,10 +13,14 @@ export class Recorder {
       return
     }
   ) {
-    this.onAudioProcess = this.onAudioProcess.bind(this)
-    this.worker = Worker()
     this.recording = false
     this.bufferLen = 4096
+
+    this.onAudioProcess = this.onAudioProcess.bind(this)
+  }
+  setup() {
+    this.worker = this.worker || Worker()
+
     this.context = this.source.context
     this.scriptNode = this.context.createScriptProcessor(this.bufferLen, 2, 2)
     this.source.connect(this.scriptNode)
@@ -31,7 +35,6 @@ export class Recorder {
       }
     })
   }
-
   onWorkerMessage(ev: MessageEvent) {
     const blob = ev.data
     this.currCallback(blob)
@@ -51,10 +54,12 @@ export class Recorder {
     })
   }
   record() {
+    this.setup()
     this.recording = true
   }
 
   stop() {
+    this.worker.terminate()
     this.recording = false
     this.source.disconnect(this.scriptNode)
     this.scriptNode.disconnect(this.context.destination)

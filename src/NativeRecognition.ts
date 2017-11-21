@@ -10,7 +10,7 @@ export class NativeRecognition extends AbstractRecognition {
   private state: INativeRecognitionState
   private speechRecognition: SpeechRecognition
 
-  constructor(lang: string) {
+  constructor(lang?: string) {
     super(lang)
     this.state = {
       listening: false,

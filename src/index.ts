@@ -8,3 +8,6 @@ export function Recognition(lang: string): IRecognition {
   }
   return new ExternalRecognition(lang)
 }
+
+export { NativeRecognition } from './NativeRecognition'
+export { ExternalRecognition } from './ExternalRecognition'

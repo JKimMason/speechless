@@ -12,7 +12,7 @@ export class ExternalRecognition extends AbstractRecognition {
   private state: IExternalRecognitionState
   private audioContext: AudioContext
   private audioRecorder: any
-  constructor(lang: string) {
+  constructor(lang?: string) {
     super(lang)
     this.state = {
       recording: false,
@@ -22,25 +22,45 @@ export class ExternalRecognition extends AbstractRecognition {
     this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
     this.onSpeechRecognitionStart = this.onSpeechRecognitionStart.bind(this)
     this.onGotStream = this.onGotStream.bind(this)
+    return this
+  }
 
-    return this
-  }
-  setup(): this {
-    this.setupNavigator()
-    return this
-  }
-  setupNavigator(): Navigator {
-    if (!(navigator as any).getUserMedia) {
-      ;(navigator as any).getUserMedia =
-        (navigator as any).webkitGetUserMedia ||
-        (navigator as any).mozGetUserMedia ||
-        (navigator as any).mediaDevices.getUserMedia
+  getNavigatorUserMedia(
+    constraints: MediaStreamConstraints,
+    successCallback: NavigatorUserMediaSuccessCallback,
+    errorCallback: NavigatorUserMediaErrorCallback
+  ): void {
+    const navigator = window.navigator
+    const navigatorAsAny = window.navigator as any
+    if (navigator.getUserMedia) {
+      navigator.getUserMedia(constraints, successCallback, errorCallback)
+    } else if (navigatorAsAny.webkitGetUserMedia) {
+      navigatorAsAny.webkitGetUserMedia(
+        constraints,
+        successCallback,
+        errorCallback
+      )
+    } else if (navigatorAsAny.mozGetUserMedia) {
+      navigatorAsAny.mozGetUserMedia(
+        constraints,
+        successCallback,
+        errorCallback
+      )
+    } else if (
+      navigatorAsAny.mediaDevices &&
+      navigatorAsAny.mediaDevices.getUserMedia
+    ) {
+      navigatorAsAny.mediaDevices.getUserMedia(
+        constraints,
+        successCallback,
+        errorCallback
+      )
+    } else {
+      throw new Error('no userMedia support')
     }
-
-    return navigator as Navigator
   }
   startRecording() {
-    navigator.getUserMedia(
+    this.getNavigatorUserMedia(
       {
         audio: {
           advanced: [
