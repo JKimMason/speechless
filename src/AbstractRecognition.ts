@@ -6,12 +6,12 @@ export interface IRecognitionMap {
   sending: IRecognitionEvent
 }
 
-export interface IRecognitionEvent {
+export interface IRecognitionEvent extends CustomEvent {
   type: string
-  body?: string
+  detail: string | undefined
 }
 
-export interface IRecognitionEventListener {
+export interface IRecognitionEventListener extends EventListener {
   (event?: IRecognitionEvent): any
 }
 
@@ -38,9 +38,10 @@ export abstract class AbstractRecognition implements IRecognition {
   private listeners: {
     [key: string]: IRecognitionEventListener[]
   }
+  private eventTarget: DocumentFragment
 
   constructor(private lang: string = 'en') {
-    this.listeners = {}
+    this.eventTarget = document.createDocumentFragment()
   }
 
   abstract listen(): void
@@ -50,30 +51,18 @@ export abstract class AbstractRecognition implements IRecognition {
     type: K,
     listener: IRecognitionEventListener
   ): void {
-    this.listeners[type] = this.listeners[type] || []
-    this.listeners[type].push(listener)
+    return this.eventTarget.addEventListener(type, listener)
   }
 
   removeEventListener<K extends keyof IRecognitionMap>(
     type: K,
     listener: IRecognitionEventListener
   ): void {
-    if (!(type in this.listeners)) {
-      return
-    }
-    this.listeners[type] = this.listeners[type].filter(
-      callback => callback !== listener
-    )
+    return this.eventTarget.removeEventListener(type, listener)
   }
 
   dispatchEvent(event: IRecognitionEvent): boolean {
-    if (!(event.type in this.listeners)) {
-      return true
-    }
-    this.listeners[event.type].forEach(callback => {
-      callback.call(this, event)
-    })
-    return true
+    return this.eventTarget.dispatchEvent(event)
   }
   setLang(lang: string): this {
     this.lang = lang

@@ -1,4 +1,15 @@
-import { Recorder } from './recorder/recorder'
+// import { Recorder } from 'mic-recorder'
+class Recorder {
+  constructor() {
+    return
+  }
+  record() {
+    return
+  }
+  stop() {
+    return
+  }
+}
 import { AbstractRecognition } from './AbstractRecognition'
 
 export interface IExternalRecognitionState {
