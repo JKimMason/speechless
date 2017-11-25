@@ -1,5 +1,5 @@
 {
-    "name": "speech-to-text-recognition",
+    "name": "speechless",
     "version": "0.0.2",
     "description": "Speech to text recognition tool that simplify the API",
     "keywords": [
@@ -10,16 +10,16 @@
         "speech-recognition",
         "speechRecognition"
     ],
-    "main": "dist/speech-to-text-recognition.umd.js",
-    "module": "dist/speech-to-text-recognition.es5.js",
-    "typings": "dist/types/speech-to-text-recognition.d.ts",
+    "main": "dist/speechless.umd.js",
+    "module": "dist/speechless.es5.js",
+    "typings": "dist/types/speechless.d.ts",
     "files": [
         "dist"
     ],
     "author": "Shy <puemos@gmail.com>",
     "repository": {
         "type": "git",
-        "url": "https://github.com/puemos/speech-to-text-recognition.git"
+        "url": "https://github.com/puemos/speechless.git"
     },
     "license": "MIT",
     "engines": {
@@ -45,6 +45,9 @@
         ]
     },
     "jest": {
+        "moduleNameMapper": {
+            "worker-loader!./recorder.worker": "<rootDir>/test/__mocks__/workerMock.js"
+          },
         "setupFiles": [
             "./test/setup/setup.js"
         ],
@@ -80,10 +83,12 @@
         "cross-env": "5.1.1",
         "husky": "0.14.3",
         "jest": "21.2.1",
+        "jest-cli": "^21.2.1",
         "jsdom": "11.3.0",
         "lint-staged": "5.0.0",
         "prettier": "1.8.2",
         "rimraf": "2.6.1",
+        "speech-recognition-mock": "0.0.4",
         "ts-jest": "21.2.2",
         "ts-loader": "^3.1.1",
         "tslint": "5.8.0",
@@ -93,7 +98,8 @@
         "typescript": "2.6.1",
         "uglifyjs-webpack-plugin": "^1.0.1",
         "webpack": "^3.8.1",
-        "webpack-config-utils": "^2.3.0"
+        "webpack-config-utils": "^2.3.0",
+        "worker-loader": "^1.1.0"
     },
     "dependencies": {}
 }
