@@ -1,5 +1,5 @@
 {
-    "name": "speech-to-text-recognition",
+    "name": "speechless",
     "version": "0.0.2",
     "description": "Speech to text recognition tool that simplify the API",
     "keywords": [
@@ -10,16 +10,16 @@
         "speech-recognition",
         "speechRecognition"
     ],
-    "main": "dist/speech-to-text-recognition.umd.js",
-    "module": "dist/speech-to-text-recognition.es5.js",
-    "typings": "dist/types/speech-to-text-recognition.d.ts",
+    "main": "dist/speechless.umd.js",
+    "module": "dist/speechless.es5.js",
+    "typings": "dist/types/speechless.d.ts",
     "files": [
         "dist"
     ],
     "author": "Shy <puemos@gmail.com>",
     "repository": {
         "type": "git",
-        "url": "https://github.com/puemos/speech-to-text-recognition.git"
+        "url": "https://github.com/puemos/speechless.git"
     },
     "license": "MIT",
     "engines": {
