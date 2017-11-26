@@ -1,14 +1,20 @@
 import { EventTarget } from '../../src/EventTarget'
 
-export class Recorder extends EventTarget {
+export class Recorder extends EventTarget implements EventTarget {
   constructor(inputPoint: GainNode) {
     super()
-    return
+
+    this.stop = this.stop.bind(this)
   }
   record() {
-    return
+    const ev = new CustomEvent('started')
+    this.dispatchEvent(ev)
+
+    setTimeout(this.stop, 1000)
   }
   stop() {
-    return
+    const ev = new CustomEvent('ended', { detail: 'wow' })
+
+    this.dispatchEvent(ev)
   }
 }

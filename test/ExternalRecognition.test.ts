@@ -3,6 +3,7 @@ import { IWindow } from '../src/AbstractRecognition'
 import { IExternalRecognitionState } from '../src/ExternalRecognition'
 import { MediaStreamMock } from './__mocks__/MediaStream'
 import { AudioContextMock } from './__mocks__/AudioContext'
+import { setTimeout } from 'timers'
 
 let recognition: ExternalRecognition
 let onEndCallback = jest.fn()
@@ -81,12 +82,25 @@ describe('ExternalRecognition', () => {
 
     expect(state.recording).toBeTruthy()
   })
-  it('should stop recording', () => {
+  it('should stop recording after 1 sec', done => {
+    recognition.listen()
+    const state: IExternalRecognitionState = (recognition as any).state
+    setTimeout(() => {
+      expect(onStopCallback).not.toBeCalled()
+      expect(onEndCallback).toBeCalled()
+
+      expect(state.recording).toBeFalsy()
+      done()
+    }, 1100)
+  })
+  it('should stop recording when hit stop', () => {
     recognition.listen()
     recognition.stop()
+
     const state: IExternalRecognitionState = (recognition as any).state
 
     expect(state.recording).toBeFalsy()
+    expect(onStopCallback).toBeCalled()
   })
   it('should do nothing on stop a stopped recording', () => {
     recognition.stop()

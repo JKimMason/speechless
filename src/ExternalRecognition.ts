@@ -20,8 +20,8 @@ export class ExternalRecognition extends AbstractRecognition {
       force: false,
       inputValue: ''
     }
-    this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
-    this.onSpeechRecognitionStart = this.onSpeechRecognitionStart.bind(this)
+    this.onRecordingEnd = this.onRecordingEnd.bind(this)
+    this.onRecordingStart = this.onRecordingStart.bind(this)
     this.onGotStream = this.onGotStream.bind(this)
     return this
   }
@@ -79,19 +79,25 @@ export class ExternalRecognition extends AbstractRecognition {
     this.audioContext = this.audioContext || new AudioContext()
 
     const inputPoint = this.audioContext.createGain()
+
     // Create an AudioNode from the stream.
-    const realAudioInput = this.audioContext.createMediaStreamSource(stream)
-    const audioInput = realAudioInput
+    const audioInput = this.audioContext.createMediaStreamSource(stream)
     audioInput.connect(inputPoint)
 
     const analyserNode = this.audioContext.createAnalyser()
     analyserNode.fftSize = 2048
     inputPoint.connect(analyserNode)
+
     this.audioRecorder = new Recorder(inputPoint)
+    this.audioRecorder.addEventListener('ended', this.onRecordingEnd)
+    this.audioRecorder.addEventListener('started', this.onRecordingStart)
+
     const zeroGain = this.audioContext.createGain()
     zeroGain.gain.value = 0.0
+
     inputPoint.connect(zeroGain)
     zeroGain.connect(this.audioContext.destination)
+
     this.audioRecorder.record()
   }
 
@@ -99,7 +105,6 @@ export class ExternalRecognition extends AbstractRecognition {
     const { recording } = this.state
     if (!recording) {
       this.state.inputValue = ''
-      this.state.recording = true
       this.startRecording()
     }
     return this
@@ -114,11 +119,11 @@ export class ExternalRecognition extends AbstractRecognition {
     return this
   }
 
-  private onSpeechRecognitionStart() {
+  private onRecordingStart() {
     this.state.recording = true
   }
 
-  private onSpeechRecognitionEnd() {
+  private onRecordingEnd() {
     const { force, inputValue } = this.state
     this.state.recording = false
     if (force) {
