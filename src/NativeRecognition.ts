@@ -87,16 +87,12 @@ export class NativeRecognition extends AbstractRecognition {
     this.state.listening = false
     if (force) {
       this.state.force = false
-      const evStopped = new CustomEvent('stopped', {
-        detail: this.state.inputValue
-      })
+      const evStopped = new CustomEvent('stopped', { detail: inputValue })
 
       this.dispatchEvent(evStopped)
     } else {
       const evChanged = new CustomEvent('changed', { detail: inputValue })
-      const evEnded = new CustomEvent('ended', {
-        detail: this.state.inputValue
-      })
+      const evEnded = new CustomEvent('ended', { detail: inputValue })
 
       this.dispatchEvent(evChanged)
       this.dispatchEvent(evEnded)

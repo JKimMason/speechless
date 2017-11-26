@@ -1,15 +1,5 @@
-// import { Recorder } from 'mic-recorder'
-class Recorder {
-  constructor() {
-    return
-  }
-  record() {
-    return
-  }
-  stop() {
-    return
-  }
-}
+import { Recorder } from 'web-recorder'
+
 import { AbstractRecognition } from './AbstractRecognition'
 
 export interface IExternalRecognitionState {
@@ -97,12 +87,12 @@ export class ExternalRecognition extends AbstractRecognition {
     const analyserNode = this.audioContext.createAnalyser()
     analyserNode.fftSize = 2048
     inputPoint.connect(analyserNode)
-    // this.audioRecorder = new Recorder(inputPoint)
+    this.audioRecorder = new Recorder(inputPoint)
     const zeroGain = this.audioContext.createGain()
     zeroGain.gain.value = 0.0
     inputPoint.connect(zeroGain)
     zeroGain.connect(this.audioContext.destination)
-    // this.audioRecorder.record()
+    this.audioRecorder.record()
   }
 
   listen(): ExternalRecognition {
@@ -133,10 +123,13 @@ export class ExternalRecognition extends AbstractRecognition {
     this.state.recording = false
     if (force) {
       this.state.force = false
-      this.dispatchEvent({ type: 'stopped', body: inputValue })
+      const evStopped = new CustomEvent('stopped', { detail: inputValue })
+      this.dispatchEvent(evStopped)
     } else {
-      this.dispatchEvent({ type: 'changed', body: inputValue })
-      this.dispatchEvent({ type: 'ended', body: inputValue })
+      const evChanged = new CustomEvent('changed', { detail: inputValue })
+      const evEnded = new CustomEvent('ended', { detail: inputValue })
+      this.dispatchEvent(evChanged)
+      this.dispatchEvent(evEnded)
     }
   }
 }

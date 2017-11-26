@@ -74,7 +74,25 @@ describe('ExternalRecognition', () => {
 
     expect(state.recording).toBeTruthy()
   })
-  it('should start recording', () => {
+  it('should keep recording', () => {
     recognition.listen()
+    recognition.listen()
+    const state: IExternalRecognitionState = (recognition as any).state
+
+    expect(state.recording).toBeTruthy()
+  })
+  it('should stop recording', () => {
+    recognition.listen()
+    recognition.stop()
+    const state: IExternalRecognitionState = (recognition as any).state
+
+    expect(state.recording).toBeFalsy()
+  })
+  it('should do nothing on stop a stopped recording', () => {
+    recognition.stop()
+    recognition.stop()
+    const state: IExternalRecognitionState = (recognition as any).state
+
+    expect(state.recording).toBeFalsy()
   })
 })

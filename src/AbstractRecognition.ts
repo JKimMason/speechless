@@ -35,9 +35,6 @@ export interface IWindow extends Window {
 }
 
 export abstract class AbstractRecognition implements IRecognition {
-  private listeners: {
-    [key: string]: IRecognitionEventListener[]
-  }
   private eventTarget: DocumentFragment
 
   constructor(private lang: string = 'en') {
