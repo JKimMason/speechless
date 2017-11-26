@@ -1,3 +1,5 @@
+import { EventTarget } from './EventTarget'
+
 export interface IRecognitionMap {
   changed: IRecognitionEvent
   ended: IRecognitionEvent
@@ -34,11 +36,10 @@ export interface IWindow extends Window {
   webkitSpeechRecognition: SpeechRecognitionStatic
 }
 
-export abstract class AbstractRecognition implements IRecognition {
-  private eventTarget: DocumentFragment
-
+export abstract class AbstractRecognition extends EventTarget
+  implements IRecognition {
   constructor(private lang: string = 'en') {
-    this.eventTarget = document.createDocumentFragment()
+    super()
   }
 
   abstract listen(): void
@@ -48,18 +49,18 @@ export abstract class AbstractRecognition implements IRecognition {
     type: K,
     listener: IRecognitionEventListener
   ): void {
-    return this.eventTarget.addEventListener(type, listener)
+    return super.addEventListener(type, listener)
   }
 
   removeEventListener<K extends keyof IRecognitionMap>(
     type: K,
     listener: IRecognitionEventListener
   ): void {
-    return this.eventTarget.removeEventListener(type, listener)
+    return super.removeEventListener(type, listener)
   }
 
   dispatchEvent(event: IRecognitionEvent): boolean {
-    return this.eventTarget.dispatchEvent(event)
+    return super.dispatchEvent(event)
   }
   setLang(lang: string): this {
     this.lang = lang

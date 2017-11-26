@@ -1,4 +1,4 @@
-import { Recorder } from 'web-recorder'
+import { Recorder } from '../test/__mocks__/Recorder'
 
 import { AbstractRecognition } from './AbstractRecognition'
 
