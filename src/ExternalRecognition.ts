@@ -1,4 +1,4 @@
-import { Recorder } from '../test/__mocks__/Recorder'
+import { Recorder } from 'web-recorder'
 
 import { AbstractRecognition } from './AbstractRecognition'
 
@@ -13,6 +13,8 @@ export class ExternalRecognition extends AbstractRecognition {
   private state: IExternalRecognitionState
   private audioContext: AudioContext
   private audioRecorder: any
+  private stream: MediaStream
+
   constructor(lang?: string) {
     super(lang)
     this.state = {
@@ -76,12 +78,13 @@ export class ExternalRecognition extends AbstractRecognition {
     )
   }
   onGotStream(stream: MediaStream) {
+    this.stream = stream
     this.audioContext = this.audioContext || new AudioContext()
 
     const inputPoint = this.audioContext.createGain()
 
     // Create an AudioNode from the stream.
-    const audioInput = this.audioContext.createMediaStreamSource(stream)
+    const audioInput = this.audioContext.createMediaStreamSource(this.stream)
     audioInput.connect(inputPoint)
 
     const analyserNode = this.audioContext.createAnalyser()
@@ -126,15 +129,15 @@ export class ExternalRecognition extends AbstractRecognition {
   private onRecordingEnd() {
     const { force, inputValue } = this.state
     this.state.recording = false
+    this.stream.getTracks().forEach((mediaStreamTrack: MediaStreamTrack) => {
+      mediaStreamTrack.stop()
+    })
     if (force) {
       this.state.force = false
-      const evStopped = new CustomEvent('stopped', { detail: inputValue })
-      this.dispatchEvent(evStopped)
+      this.dispatchEvent(new CustomEvent('stopped', { detail: inputValue }))
     } else {
-      const evChanged = new CustomEvent('changed', { detail: inputValue })
-      const evEnded = new CustomEvent('ended', { detail: inputValue })
-      this.dispatchEvent(evChanged)
-      this.dispatchEvent(evEnded)
+      this.dispatchEvent(new CustomEvent('changed', { detail: inputValue }))
+      this.dispatchEvent(new CustomEvent('ended', { detail: inputValue }))
     }
   }
 }
