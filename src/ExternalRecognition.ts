@@ -97,13 +97,12 @@ export class ExternalRecognition extends AbstractRecognition {
     const analyserNode = this.audioContext.createAnalyser()
     analyserNode.fftSize = 2048
     inputPoint.connect(analyserNode)
-    // Direclty from window.Recorder
-    this.audioRecorder = new Recorder(inputPoint)
+    // this.audioRecorder = new Recorder(inputPoint)
     const zeroGain = this.audioContext.createGain()
     zeroGain.gain.value = 0.0
     inputPoint.connect(zeroGain)
     zeroGain.connect(this.audioContext.destination)
-    this.audioRecorder.record()
+    // this.audioRecorder.record()
   }
 
   listen(): ExternalRecognition {

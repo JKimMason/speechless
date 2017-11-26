@@ -1,11 +1,10 @@
-import { SpeechRecognitionMock } from 'speech-recognition-mock'
-import { AudioContext } from 'standardized-audio-context-mock'
 import { ExternalRecognition } from '../src'
 import { IWindow } from '../src/AbstractRecognition'
 import { IExternalRecognitionState } from '../src/ExternalRecognition'
+import { MediaStreamMock } from './__mocks__/MediaStream'
+import { AudioContextMock } from './__mocks__/AudioContext'
 
 let recognition: ExternalRecognition
-let speechRecognition: SpeechRecognitionMock
 let onEndCallback = jest.fn()
 let onChangeCallback = jest.fn()
 let onStopCallback = jest.fn()
@@ -13,13 +12,7 @@ let onStopCallback = jest.fn()
 describe('ExternalRecognition', () => {
   describe('ExternalRecognition getUserMedia', () => {
     beforeEach(() => {
-      delete (global as any).navigator
-      ;(global as any).navigator = {
-        getUserMedia: jest.fn()
-      }
       recognition = new ExternalRecognition()
-
-      speechRecognition = (recognition as any).speechRecognition
     })
     it('should throw an error no getUserMedia', () => {
       delete (global as any).navigator
@@ -55,17 +48,18 @@ describe('ExternalRecognition', () => {
   })
 
   beforeEach(() => {
-    ;(window as any).AudioContext = AudioContext
+    ;(window as any).AudioContext = AudioContextMock
 
     delete (global as any).navigator
     ;(global as any).navigator = {
-      getUserMedia: jest.fn()
+      getUserMedia: function(_, cb): MediaStream {
+        return cb(new MediaStreamMock())
+      }
     }
     recognition = new ExternalRecognition()
     recognition.addEventListener('ended', onEndCallback)
     recognition.addEventListener('changed', onChangeCallback)
     recognition.addEventListener('stopped', onStopCallback)
-    speechRecognition = (recognition as any).speechRecognition
   })
 
   afterEach(() => {
@@ -79,5 +73,8 @@ describe('ExternalRecognition', () => {
     const state: IExternalRecognitionState = (recognition as any).state
 
     expect(state.recording).toBeTruthy()
+  })
+  it('should start recording', () => {
+    recognition.listen()
   })
 })
