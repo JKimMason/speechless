@@ -89,8 +89,8 @@ export class ExternalRecognition extends AbstractRecognition {
     inputPoint.connect(analyserNode)
 
     this.audioRecorder = new Recorder(inputPoint)
-    this.audioRecorder.addEventListener('ended', this.onRecordingEnd)
     this.audioRecorder.addEventListener('started', this.onRecordingStart)
+    this.audioRecorder.addEventListener('ended', this.onRecordingEnd)
 
     const zeroGain = this.audioContext.createGain()
     zeroGain.gain.value = 0.0

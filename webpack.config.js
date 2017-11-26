@@ -29,11 +29,6 @@ const RULES = {
         }
       }
     ]
-  },
-  worker: {
-    test: /\.worker\.js$/,
-    include: /src/,
-    use: { loader: "worker-loader" }
   }
 };
 const config = (env = DEFAULT_ENV) => {
@@ -83,7 +78,7 @@ const config = (env = DEFAULT_ENV) => {
     devtool: "source-map",
     plugins: PLUGINS,
     module: {
-      rules: [RULES.ts, RULES.worker]
+      rules: [RULES.ts]
     }
   };
 
