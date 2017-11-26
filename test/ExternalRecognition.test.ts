@@ -1,5 +1,5 @@
 import { SpeechRecognitionMock } from 'speech-recognition-mock'
-
+import { AudioContext } from 'standardized-audio-context-mock'
 import { ExternalRecognition } from '../src'
 import { IWindow } from '../src/AbstractRecognition'
 import { IExternalRecognitionState } from '../src/ExternalRecognition'
@@ -11,8 +11,53 @@ let onChangeCallback = jest.fn()
 let onStopCallback = jest.fn()
 
 describe('ExternalRecognition', () => {
+  describe('ExternalRecognition getUserMedia', () => {
+    beforeEach(() => {
+      delete (global as any).navigator
+      ;(global as any).navigator = {
+        getUserMedia: jest.fn()
+      }
+      recognition = new ExternalRecognition()
+
+      speechRecognition = (recognition as any).speechRecognition
+    })
+    it('should throw an error no getUserMedia', () => {
+      delete (global as any).navigator
+      ;(global as any).navigator = {}
+      expect(() => recognition.listen()).toThrow()
+    })
+    it('should use getUserMedia', () => {
+      expect(() => recognition.listen()).not.toThrow()
+    })
+    it('should use webkitGetUserMedia', () => {
+      delete (global as any).navigator
+      ;(global as any).navigator = {
+        webkitGetUserMedia: jest.fn()
+      }
+      expect(() => recognition.listen()).not.toThrow()
+    })
+    it('should use mozGetUserMedia', () => {
+      delete (global as any).navigator
+      ;(global as any).navigator = {
+        mozGetUserMedia: jest.fn()
+      }
+      expect(() => recognition.listen()).not.toThrow()
+    })
+    it('should use mozGetUserMedia', () => {
+      delete (global as any).navigator
+      ;(global as any).navigator = {
+        mediaDevices: {
+          getUserMedia: jest.fn()
+        }
+      }
+      expect(() => recognition.listen()).not.toThrow()
+    })
+  })
+
   beforeEach(() => {
-    delete (global as object).navigator
+    ;(window as any).AudioContext = AudioContext
+
+    delete (global as any).navigator
     ;(global as any).navigator = {
       getUserMedia: jest.fn()
     }
@@ -29,37 +74,6 @@ describe('ExternalRecognition', () => {
     onStopCallback.mockReset()
   })
 
-  it('should throw an error no getUserMedia', () => {
-    delete (global as object).navigator
-    ;(global as any).navigator = {}
-    expect(() => recognition.listen()).toThrow()
-  })
-  it('should use getUserMedia', () => {
-    expect(() => recognition.listen()).not.toThrow()
-  })
-  it('should use webkitGetUserMedia', () => {
-    delete (global as object).navigator
-    ;(global as any).navigator = {
-      webkitGetUserMedia: jest.fn()
-    }
-    expect(() => recognition.listen()).not.toThrow()
-  })
-  it('should use mozGetUserMedia', () => {
-    delete (global as object).navigator
-    ;(global as any).navigator = {
-      mozGetUserMedia: jest.fn()
-    }
-    expect(() => recognition.listen()).not.toThrow()
-  })
-  it('should use mozGetUserMedia', () => {
-    delete (global as object).navigator
-    ;(global as any).navigator = {
-      mediaDevices: {
-        getUserMedia: jest.fn()
-      }
-    }
-    expect(() => recognition.listen()).not.toThrow()
-  })
   it('should start recording', () => {
     recognition.listen()
     const state: IExternalRecognitionState = (recognition as any).state
