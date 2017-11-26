@@ -7,7 +7,7 @@ const packageJSON = require("./package.json");
 const packageName = normalizePackageName(packageJSON.name);
 const LIB_NAME = pascalCase(packageName);
 const PATHS = {
-  entryPoint: resolve(__dirname, "src/speechless.ts"),
+  entryPoint: resolve(__dirname, "src/index.ts"),
   umd: resolve(__dirname, "dist")
 };
 
