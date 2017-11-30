@@ -58,9 +58,9 @@ describe('ExternalRecognition', () => {
       }
     }
     recognition = new ExternalRecognition()
-    recognition.addEventListener('ended', onEndCallback)
-    recognition.addEventListener('changed', onChangeCallback)
-    recognition.addEventListener('stopped', onStopCallback)
+    recognition.addEventListener('end', onEndCallback)
+    recognition.addEventListener('data', onChangeCallback)
+    recognition.addEventListener('stop', onStopCallback)
   })
 
   afterEach(() => {
@@ -82,27 +82,7 @@ describe('ExternalRecognition', () => {
 
     expect(state.recording).toBeTruthy()
   })
-  it('should stop recording after 1 sec', done => {
-    recognition.listen()
-    const state: IExternalRecognitionState = (recognition as any).state
-    setTimeout(() => {
-      expect(onStopCallback).not.toBeCalled()
-      expect(onEndCallback).toBeCalled()
-
-      expect(state.recording).toBeFalsy()
-      done()
-    }, 1100)
-  })
-  it('should stop recording when hit stop', () => {
-    recognition.listen()
-    recognition.stop()
-
-    const state: IExternalRecognitionState = (recognition as any).state
-
-    expect(state.recording).toBeFalsy()
-    expect(onStopCallback).toBeCalled()
-  })
-  it('should do nothing on stop a stopped recording', () => {
+  it('should do nothing on stop a stop recording', () => {
     recognition.stop()
     recognition.stop()
     const state: IExternalRecognitionState = (recognition as any).state

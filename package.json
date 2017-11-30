@@ -1,7 +1,7 @@
 {
   "name": "speechless",
   "version": "0.0.2",
-  "description": "Speech to text recognition tool that simplify the API",
+  "description": "Speech to text recognition tool native/external",
   "keywords": [
     "speech",
     "speech-to-text",
@@ -10,10 +10,12 @@
     "speech-recognition",
     "speechRecognition"
   ],
-  "main": "dist/speechless.umd.js",
-  "module": "dist/speechless.es5.js",
-  "typings": "dist/types/speechless.d.ts",
-  "files": ["dist"],
+  "main": "dist/speechless.min.js",
+  "module": "dist/speechless.min.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "author": "Shy <puemos@gmail.com>",
   "repository": {
     "type": "git",
@@ -28,8 +30,7 @@
     "prepush": "npm run test:prod && npm run build",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build":
-      "tsc && webpack && webpack --env.prod && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "build": "tsc && webpack && webpack --env.prod && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
     "start": "tsc -w & webpack -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -45,18 +46,26 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "worker-loader!./recorder.worker":
-        "<rootDir>/test/__mocks__/workerMock.js",
+      "worker-loader!./recorder.worker": "<rootDir>/test/__mocks__/workerMock.js",
       "web-recorder": "<rootDir>/test/__mocks__/Recorder.ts"
     },
-    "setupFiles": ["./test/setup/setup.js"],
+    "setupFiles": [
+      "./test/setup/setup.js"
+    ],
     "transform": {
       "^.+\\.js$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": ["ts", "tsx", "js"],
-    "coveragePathIgnorePatterns": ["/node_modules/", "/test/"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 90,
@@ -95,5 +104,7 @@
     "webpack": "^3.8.1",
     "webpack-config-utils": "^2.3.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "web-recorder": "0.0.4"
+  }
 }

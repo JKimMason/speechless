@@ -14,9 +14,9 @@ describe('NativeRecognition', () => {
     ;(window as IWindow).webkitSpeechRecognition = SpeechRecognitionMock
     recognition = new NativeRecognition()
     recognition.setup()
-    recognition.addEventListener('ended', onEndCallback)
-    recognition.addEventListener('changed', onChangeCallback)
-    recognition.addEventListener('stopped', onStopCallback)
+    recognition.addEventListener('end', onEndCallback)
+    recognition.addEventListener('data', onChangeCallback)
+    recognition.addEventListener('stop', onStopCallback)
     speechRecognition = (recognition as any).speechRecognition
   })
 
@@ -49,15 +49,15 @@ describe('NativeRecognition', () => {
     speechRecognition.say('hi are', false)
     speechRecognition.say('hi are you', false)
     speechRecognition.say('hi are you doing here', true)
-    const changedCalls: IRecognitionEvent[][] = onChangeCallback.mock.calls
-    expect(changedCalls[0][0].type).toEqual('changed')
-    expect(changedCalls[0][0].detail).toEqual('hi are')
+    const dataCalls: IRecognitionEvent[][] = onChangeCallback.mock.calls
+    expect(dataCalls[0][0].type).toEqual('data')
+    expect(dataCalls[0][0].detail).toEqual('hi are')
 
-    expect(changedCalls[1][0].type).toEqual('changed')
-    expect(changedCalls[1][0].detail).toEqual('hi are you')
+    expect(dataCalls[1][0].type).toEqual('data')
+    expect(dataCalls[1][0].detail).toEqual('hi are you')
 
-    expect(changedCalls[2][0].type).toEqual('changed')
-    expect(changedCalls[2][0].detail).toEqual('hi are you doing here')
+    expect(dataCalls[2][0].type).toEqual('data')
+    expect(dataCalls[2][0].detail).toEqual('hi are you doing here')
   })
 
   it('should call end ', () => {
@@ -68,8 +68,7 @@ describe('NativeRecognition', () => {
 
     const endCalls: IRecognitionEvent[][] = onEndCallback.mock.calls
 
-    expect(endCalls[0][0].type).toEqual('ended')
-    expect(endCalls[0][0].detail).toEqual('hi are you doing here')
+    expect(endCalls[0][0].type).toEqual('end')
   })
 
   it('should not call end ', () => {
@@ -89,7 +88,7 @@ describe('NativeRecognition', () => {
     expect(spy.mock.calls.length).toEqual(1)
   })
 
-  it('should not stop a stopped recognition ', () => {
+  it('should not stop a stop recognition ', () => {
     const spy = jest.spyOn(speechRecognition, 'stop')
 
     recognition.stop()
@@ -111,9 +110,9 @@ describe('NativeRecognition', () => {
     const onStopCallback = jest.fn()
     recognition = new NativeRecognition('he')
 
-    recognition.addEventListener('ended', onEndCallback)
-    recognition.addEventListener('changed', onChangeCallback)
-    recognition.addEventListener('stopped', onStopCallback)
+    recognition.addEventListener('end', onEndCallback)
+    recognition.addEventListener('data', onChangeCallback)
+    recognition.addEventListener('stop', onStopCallback)
 
     speechRecognition = (recognition as any).speechRecognition
     expect((recognition as any).lang).toEqual('he')
@@ -122,19 +121,18 @@ describe('NativeRecognition', () => {
     speechRecognition.say('hi are you', false)
     speechRecognition.say('hi are you doing here', true)
     const endCalls: IRecognitionEvent[][] = onEndCallback.mock.calls
-    const changedCalls: IRecognitionEvent[][] = onChangeCallback.mock.calls
+    const dataCalls: IRecognitionEvent[][] = onChangeCallback.mock.calls
 
-    expect(endCalls[0][0].type).toEqual('ended')
-    expect(endCalls[0][0].detail).toEqual('hi are you doing here')
+    expect(endCalls[0][0].type).toEqual('end')
 
-    expect(changedCalls[0][0].type).toEqual('changed')
-    expect(changedCalls[0][0].detail).toEqual('hi are')
+    expect(dataCalls[0][0].type).toEqual('data')
+    expect(dataCalls[0][0].detail).toEqual('hi are')
 
-    expect(changedCalls[1][0].type).toEqual('changed')
-    expect(changedCalls[1][0].detail).toEqual('hi are you')
+    expect(dataCalls[1][0].type).toEqual('data')
+    expect(dataCalls[1][0].detail).toEqual('hi are you')
 
-    expect(changedCalls[2][0].type).toEqual('changed')
-    expect(changedCalls[2][0].detail).toEqual('hi are you doing here')
+    expect(dataCalls[2][0].type).toEqual('data')
+    expect(dataCalls[2][0].detail).toEqual('hi are you doing here')
 
     recognition.listen()
     recognition.stop()
@@ -143,9 +141,9 @@ describe('NativeRecognition', () => {
   })
 
   it('should remove event listener', () => {
-    recognition.removeEventListener('ended', onEndCallback)
-    recognition.removeEventListener('changed', onChangeCallback)
-    recognition.removeEventListener('stopped', onStopCallback)
+    recognition.removeEventListener('end', onEndCallback)
+    recognition.removeEventListener('data', onChangeCallback)
+    recognition.removeEventListener('stop', onStopCallback)
 
     recognition.listen()
     speechRecognition.say('hi are you doing here', true)
@@ -159,9 +157,9 @@ describe('NativeRecognition', () => {
   })
 
   it('should dispach an event', () => {
-    const evStopped = new CustomEvent('stopped')
+    const evstop = new CustomEvent('stop')
 
-    recognition.dispatchEvent(evStopped)
+    recognition.dispatchEvent(evstop)
     expect(onStopCallback).toBeCalled()
   })
 

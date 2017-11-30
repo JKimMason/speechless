@@ -1,9 +1,9 @@
 import { EventTarget } from './EventTarget'
 
 export interface IRecognitionMap {
-  changed: IRecognitionEvent
-  ended: IRecognitionEvent
-  stopped: IRecognitionEvent
+  data: IRecognitionEvent
+  end: IRecognitionEvent
+  stop: IRecognitionEvent
   recording: IRecognitionEvent
   sending: IRecognitionEvent
 }

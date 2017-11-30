@@ -1,20 +1,23 @@
 import { EventTarget } from '../../src/EventTarget'
 
 export class Recorder extends EventTarget implements EventTarget {
-  constructor(inputPoint: GainNode) {
+  constructor(stream: MediaStream) {
     super()
 
     this.stop = this.stop.bind(this)
   }
-  record() {
-    const ev = new CustomEvent('started')
-    this.dispatchEvent(ev)
+  start() {
+    this.dispatchEvent(new CustomEvent('start'))
 
     setTimeout(() => {
-      this.dispatchEvent(new CustomEvent('ended', { detail: 'wow' }))
+      this.dispatchEvent(new CustomEvent('data', { detail: 'wow' }))
+      this.dispatchEvent(new CustomEvent('stop'))
     }, 1000)
   }
+  reset() {
+    this.dispatchEvent(new CustomEvent('reset'))
+  }
   stop() {
-    this.dispatchEvent(new CustomEvent('stopped', { detail: 'wow' }))
+    this.dispatchEvent(new CustomEvent('stop'))
   }
 }

@@ -70,7 +70,7 @@ export class NativeRecognition extends AbstractRecognition {
   private onChange(interimTranscript: string) {
     this.state.inputValue = interimTranscript
     this.dispatchEvent(
-      new CustomEvent('changed', { detail: this.state.inputValue })
+      new CustomEvent('data', { detail: this.state.inputValue })
     )
   }
 
@@ -88,10 +88,10 @@ export class NativeRecognition extends AbstractRecognition {
     this.state.listening = false
     if (force) {
       this.state.force = false
-      this.dispatchEvent(new CustomEvent('stopped', { detail: inputValue }))
+      this.dispatchEvent(new CustomEvent('stop'))
     } else {
-      this.dispatchEvent(new CustomEvent('changed', { detail: inputValue }))
-      this.dispatchEvent(new CustomEvent('ended', { detail: inputValue }))
+      this.dispatchEvent(new CustomEvent('data', { detail: inputValue }))
+      this.dispatchEvent(new CustomEvent('end'))
     }
   }
 
