@@ -1,6 +1,6 @@
 {
   "name": "speechless",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Speech to text recognition tool native/external",
   "keywords": [
     "speech",
