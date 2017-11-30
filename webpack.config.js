@@ -7,7 +7,7 @@ const packageJSON = require("./package.json");
 const packageName = normalizePackageName(packageJSON.name);
 const LIB_NAME = pascalCase(packageName);
 const PATHS = {
-  entryPoint: resolve(__dirname, "src/speechless.ts"),
+  entryPoint: resolve(__dirname, "src/index.ts"),
   umd: resolve(__dirname, "dist")
 };
 
@@ -29,11 +29,6 @@ const RULES = {
         }
       }
     ]
-  },
-  worker: {
-    test: /\.worker\.js$/,
-    include: /src/,
-    use: { loader: "worker-loader" }
   }
 };
 const config = (env = DEFAULT_ENV) => {
@@ -83,7 +78,7 @@ const config = (env = DEFAULT_ENV) => {
     devtool: "source-map",
     plugins: PLUGINS,
     module: {
-      rules: [RULES.ts, RULES.worker]
+      rules: [RULES.ts]
     }
   };
 

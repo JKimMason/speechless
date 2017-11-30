@@ -1,15 +1,5 @@
-// import { Recorder } from 'mic-recorder'
-class Recorder {
-  constructor() {
-    return
-  }
-  record() {
-    return
-  }
-  stop() {
-    return
-  }
-}
+import { Recorder } from 'web-recorder'
+
 import { AbstractRecognition } from './AbstractRecognition'
 
 export interface IExternalRecognitionState {
@@ -23,6 +13,8 @@ export class ExternalRecognition extends AbstractRecognition {
   private state: IExternalRecognitionState
   private audioContext: AudioContext
   private audioRecorder: any
+  private stream: MediaStream
+
   constructor(lang?: string) {
     super(lang)
     this.state = {
@@ -30,8 +22,8 @@ export class ExternalRecognition extends AbstractRecognition {
       force: false,
       inputValue: ''
     }
-    this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
-    this.onSpeechRecognitionStart = this.onSpeechRecognitionStart.bind(this)
+    this.onRecordingData = this.onRecordingData.bind(this)
+    this.onRecordingStart = this.onRecordingStart.bind(this)
     this.onGotStream = this.onGotStream.bind(this)
     return this
   }
@@ -86,31 +78,18 @@ export class ExternalRecognition extends AbstractRecognition {
     )
   }
   onGotStream(stream: MediaStream) {
-    this.audioContext = this.audioContext || new AudioContext()
+    this.audioRecorder = new Recorder(stream)
+    this.audioRecorder.addEventListener('start', this.onRecordingStart)
+    this.audioRecorder.addEventListener('stpo', this.onRecordingStop)
+    this.audioRecorder.addEventListener('data', this.onRecordingData)
 
-    const inputPoint = this.audioContext.createGain()
-    // Create an AudioNode from the stream.
-    const realAudioInput = this.audioContext.createMediaStreamSource(stream)
-    const audioInput = realAudioInput
-    audioInput.connect(inputPoint)
-
-    const analyserNode = this.audioContext.createAnalyser()
-    analyserNode.fftSize = 2048
-    inputPoint.connect(analyserNode)
-    // Direclty from window.Recorder
-    this.audioRecorder = new Recorder(inputPoint)
-    const zeroGain = this.audioContext.createGain()
-    zeroGain.gain.value = 0.0
-    inputPoint.connect(zeroGain)
-    zeroGain.connect(this.audioContext.destination)
-    this.audioRecorder.record()
+    this.audioRecorder.start()
   }
 
   listen(): ExternalRecognition {
     const { recording } = this.state
     if (!recording) {
       this.state.inputValue = ''
-      this.state.recording = true
       this.startRecording()
     }
     return this
@@ -120,24 +99,36 @@ export class ExternalRecognition extends AbstractRecognition {
     const { recording } = this.state
     if (recording) {
       this.state.force = true
+      this.audioRecorder.reset()
+
       this.audioRecorder.stop()
     }
     return this
   }
 
-  private onSpeechRecognitionStart() {
+  private onRecordingStart() {
     this.state.recording = true
   }
 
-  private onSpeechRecognitionEnd() {
+  private onRecordingStop() {
+    this.state.recording = false
+    this.state.force = false
+
+    this.dispatchEvent(new CustomEvent('stop'))
+  }
+
+  private onRecordingData() {
     const { force, inputValue } = this.state
     this.state.recording = false
+    this.stream.getTracks().forEach((mediaStreamTrack: MediaStreamTrack) => {
+      mediaStreamTrack.stop()
+    })
     if (force) {
       this.state.force = false
-      this.dispatchEvent({ type: 'stopped', body: inputValue })
+      this.dispatchEvent(new CustomEvent('stop'))
     } else {
-      this.dispatchEvent({ type: 'changed', body: inputValue })
-      this.dispatchEvent({ type: 'ended', body: inputValue })
+      this.dispatchEvent(new CustomEvent('data', { detail: inputValue }))
+      this.dispatchEvent(new CustomEvent('end'))
     }
   }
 }
