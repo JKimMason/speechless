@@ -89,7 +89,7 @@
     "jest-cli": "^21.2.1",
     "jsdom": "11.3.0",
     "lint-staged": "6.0.0",
-    "prettier": "1.9.0",
+    "prettier": "1.9.1",
     "rimraf": "2.6.1",
     "speech-recognition-mock": "0.0.4",
     "standardized-audio-context-mock": "^3.1.8",
