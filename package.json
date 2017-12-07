@@ -46,8 +46,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "worker-loader!./recorder.worker": "<rootDir>/test/__mocks__/workerMock.js",
-      "web-recorder": "<rootDir>/test/__mocks__/Recorder.ts"
+      "web-recorder": "<rootDir>/test/__mocks__/RecorderMock.ts"
     },
     "setupFiles": [
       "./test/setup/setup.js"

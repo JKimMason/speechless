@@ -8,16 +8,15 @@ export class Recorder extends EventTarget implements EventTarget {
   }
   start() {
     this.dispatchEvent(new CustomEvent('start'))
-
-    setTimeout(() => {
-      this.dispatchEvent(new CustomEvent('data', { detail: 'wow' }))
-      this.dispatchEvent(new CustomEvent('stop'))
-    }, 1000)
+    this.dispatchEvent(new CustomEvent('data', { detail: 'wow' }))
   }
   reset() {
     this.dispatchEvent(new CustomEvent('reset'))
   }
   stop() {
+    this.dispatchEvent(new CustomEvent('stop'))
+  }
+  abort() {
     this.dispatchEvent(new CustomEvent('stop'))
   }
 }

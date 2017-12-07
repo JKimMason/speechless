@@ -1,22 +1,23 @@
 import { AbstractRecognition, IWindow } from './AbstractRecognition'
 
 export interface INativeRecognitionState {
-  inputValue: string
-  listening: boolean
-  force: boolean
+  inputValue?: string
+  listening?: boolean
+  force?: boolean
 }
 
-export class NativeRecognition extends AbstractRecognition {
-  private state: INativeRecognitionState
+export class NativeRecognition extends AbstractRecognition<
+  INativeRecognitionState
+> {
   private speechRecognition: SpeechRecognition
 
   constructor(lang?: string) {
     super(lang)
-    this.state = {
+    this.setState({
       listening: false,
       force: false,
       inputValue: ''
-    }
+    })
     this.onSpeechRecognitionResult = this.onSpeechRecognitionResult.bind(this)
     this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
     this.onSpeechRecognitionStart = this.onSpeechRecognitionStart.bind(this)
@@ -50,44 +51,57 @@ export class NativeRecognition extends AbstractRecognition {
   }
 
   listen(): NativeRecognition {
-    const { listening } = this.state
+    const { listening } = this.getState()
     if (!listening) {
-      this.state.inputValue = ''
+      this.setState({
+        inputValue: ''
+      })
       this.speechRecognition.start()
     }
     return this
   }
 
   stop(): NativeRecognition {
-    const { listening } = this.state
+    const { listening } = this.getState()
     if (listening) {
-      this.state.force = true
+      this.setState({
+        force: true
+      })
       this.speechRecognition.stop()
     }
     return this
   }
 
   private onChange(interimTranscript: string) {
-    this.state.inputValue = interimTranscript
-    this.dispatchEvent(
-      new CustomEvent('data', { detail: this.state.inputValue })
-    )
+    const { inputValue } = this.getState()
+    this.setState({
+      inputValue: interimTranscript
+    })
+    this.dispatchEvent(new CustomEvent('data', { detail: interimTranscript }))
   }
 
   private onFinal(finalTranscript: string) {
-    this.state.inputValue = finalTranscript
+    this.setState({
+      inputValue: finalTranscript
+    })
     this.speechRecognition.stop()
   }
 
   private onSpeechRecognitionStart() {
-    this.state.listening = true
+    this.setState({
+      listening: true
+    })
   }
 
   private onSpeechRecognitionEnd() {
-    const { force, inputValue } = this.state
-    this.state.listening = false
+    const { force, inputValue } = this.getState()
+    this.setState({
+      listening: false
+    })
     if (force) {
-      this.state.force = false
+      this.setState({
+        force: false
+      })
       this.dispatchEvent(new CustomEvent('stop'))
     } else {
       this.dispatchEvent(new CustomEvent('data', { detail: inputValue }))

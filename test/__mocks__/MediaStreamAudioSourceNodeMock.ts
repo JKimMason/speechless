@@ -1,4 +1,4 @@
-import { AudioNodeMock } from './AudioNode'
+import { AudioNodeMock } from './AudioNodeMock'
 
 export class MediaStreamAudioSourceNodeMock {
   channelCount: number

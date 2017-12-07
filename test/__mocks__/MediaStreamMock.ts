@@ -1,3 +1,5 @@
+import { MediaStreamTrackMock } from './MediaStreamTrackMock'
+
 export class MediaStreamMock implements MediaStream {
   active: boolean
   id: string
@@ -17,9 +19,6 @@ export class MediaStreamMock implements MediaStream {
   getTrackById(trackId: string): MediaStreamTrack {
     throw new Error('Method not implemented.')
   }
-  getTracks(): MediaStreamTrack[] {
-    throw new Error('Method not implemented.')
-  }
   getVideoTracks(): MediaStreamTrack[] {
     throw new Error('Method not implemented.')
   }
@@ -33,7 +32,7 @@ export class MediaStreamMock implements MediaStream {
     K extends 'active' | 'addtrack' | 'inactive' | 'removetrack'
   >(
     type: K,
-    listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any,
+    listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => void,
     useCapture?: boolean
   ): void
   addEventListener(
@@ -48,7 +47,7 @@ export class MediaStreamMock implements MediaStream {
     K extends 'active' | 'addtrack' | 'inactive' | 'removetrack'
   >(
     type: K,
-    listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any,
+    listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => void,
     useCapture?: boolean
   ): void
   removeEventListener(
@@ -61,5 +60,8 @@ export class MediaStreamMock implements MediaStream {
   }
   dispatchEvent(evt: Event): boolean {
     throw new Error('Method not implemented.')
+  }
+  getTracks(): MediaStreamTrack[] {
+    return [new MediaStreamTrackMock()]
   }
 }

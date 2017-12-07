@@ -1,5 +1,5 @@
 import { AudioContext } from 'standardized-audio-context-mock'
-import { MediaStreamAudioSourceNodeMock } from './MediaStreamAudioSourceNode'
+import { MediaStreamAudioSourceNodeMock } from './MediaStreamAudioSourceNodeMock'
 
 export class AudioContextMock extends AudioContext {
   constructor() {

@@ -17,8 +17,8 @@ export interface IRecognitionEventListener extends EventListener {
   (event?: IRecognitionEvent): any
 }
 
-export interface IRecognition {
-  setLang(lang: string): IRecognition
+export interface IRecognition<T> {
+  setLang(lang: string): IRecognition<T>
   listen(): void
   stop(): void
   addEventListener<K extends keyof IRecognitionMap>(
@@ -36,8 +36,10 @@ export interface IWindow extends Window {
   webkitSpeechRecognition: SpeechRecognitionStatic
 }
 
-export abstract class AbstractRecognition extends EventTarget
-  implements IRecognition {
+export abstract class AbstractRecognition<T> extends EventTarget
+  implements IRecognition<T> {
+  private state: T
+
   constructor(private lang: string = 'en') {
     super()
   }
@@ -68,5 +70,12 @@ export abstract class AbstractRecognition extends EventTarget
   }
   getLang(): string {
     return this.lang
+  }
+  setState(state: T): this {
+    this.state = Object.assign({}, this.state, state)
+    return this
+  }
+  getState(): T {
+    return this.state
   }
 }
