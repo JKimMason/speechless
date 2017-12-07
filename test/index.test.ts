@@ -15,7 +15,7 @@ describe('ExternalRecognition', () => {
   })
   it('should use getUserMedia', () => {
     delete (window as IWindow).webkitSpeechRecognition
-    const recognition = Recognition()
+    const recognition = Recognition('en')
     expect(recognition instanceof ExternalRecognition).toBeTruthy()
   })
 })

@@ -6,16 +6,16 @@ import { IWindow, IRecognitionEvent } from '../src/AbstractRecognition'
 let recognition: NativeRecognition
 let speechRecognition: SpeechRecognitionMock
 let onEndCallback = jest.fn()
-let onChangeCallback = jest.fn()
+let onDataCallback = jest.fn()
 let onStopCallback = jest.fn()
 
 describe('NativeRecognition', () => {
   beforeEach(() => {
     ;(window as IWindow).webkitSpeechRecognition = SpeechRecognitionMock
-    recognition = new NativeRecognition()
+    recognition = new NativeRecognition('en')
     recognition.setup()
     recognition.addEventListener('end', onEndCallback)
-    recognition.addEventListener('data', onChangeCallback)
+    recognition.addEventListener('data', onDataCallback)
     recognition.addEventListener('stop', onStopCallback)
     speechRecognition = (recognition as any).speechRecognition
   })
@@ -23,7 +23,7 @@ describe('NativeRecognition', () => {
   afterEach(() => {
     delete (window as IWindow).webkitSpeechRecognition
     onEndCallback.mockReset()
-    onChangeCallback.mockReset()
+    onDataCallback.mockReset()
     onStopCallback.mockReset()
   })
 
@@ -49,7 +49,7 @@ describe('NativeRecognition', () => {
     speechRecognition.say('hi are', false)
     speechRecognition.say('hi are you', false)
     speechRecognition.say('hi are you doing here', true)
-    const dataCalls: IRecognitionEvent[][] = onChangeCallback.mock.calls
+    const dataCalls: IRecognitionEvent[][] = onDataCallback.mock.calls
     expect(dataCalls[0][0].type).toEqual('data')
     expect(dataCalls[0][0].detail).toEqual('hi are')
 
@@ -142,13 +142,13 @@ describe('NativeRecognition', () => {
 
   it('should remove event listener', () => {
     recognition.removeEventListener('end', onEndCallback)
-    recognition.removeEventListener('data', onChangeCallback)
+    recognition.removeEventListener('data', onDataCallback)
     recognition.removeEventListener('stop', onStopCallback)
 
     recognition.listen()
     speechRecognition.say('hi are you doing here', true)
     expect(onEndCallback).not.toBeCalled()
-    expect(onChangeCallback).not.toBeCalled()
+    expect(onDataCallback).not.toBeCalled()
 
     recognition.listen()
     recognition.stop()

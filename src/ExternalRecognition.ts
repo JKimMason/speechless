@@ -4,8 +4,9 @@ import { AbstractRecognition } from './AbstractRecognition'
 import { getNavigatorUserMedia } from './utils'
 
 export interface IExternalRecognitionState {
-  inputValue?: string
-  recording?: boolean
+  value?: any
+  listening?: boolean
+  fetching?: boolean
   force?: boolean
 }
 
@@ -17,25 +18,30 @@ export class ExternalRecognition extends AbstractRecognition<
   private audioContext: AudioContext
   private stream: MediaStream
 
-  constructor(lang?: string) {
+  constructor(
+    lang?: string,
+    private remoteCall?: (blob?: Blob) => Promise<any>
+  ) {
     super(lang) /* istanbul ignore next */
     this.setState({
-      recording: false,
+      listening: false,
       force: false,
-      inputValue: ''
+      fetching: false,
+      value: null
     })
     this.onRecordingData = this.onRecordingData.bind(this)
     this.onRecordingStart = this.onRecordingStart.bind(this)
     this.onRecordingStop = this.onRecordingStop.bind(this)
+    this.onRemoteResult = this.onRemoteResult.bind(this)
     this.onGotStream = this.onGotStream.bind(this)
     return this
   }
 
   listen(): ExternalRecognition {
-    const { recording } = this.getState()
-    if (!recording) {
+    const { listening } = this.getState()
+    if (!listening) {
       this.setState({
-        inputValue: ''
+        value: null
       })
       this.record()
     }
@@ -43,9 +49,9 @@ export class ExternalRecognition extends AbstractRecognition<
   }
 
   stop(): ExternalRecognition {
-    const { recording } = this.getState()
+    const { listening } = this.getState()
 
-    if (recording) {
+    if (listening) {
       this.setState({
         force: true
       })
@@ -87,12 +93,12 @@ export class ExternalRecognition extends AbstractRecognition<
 
   private onRecordingStart() {
     this.setState({
-      recording: true
+      listening: true
     })
   }
 
   private onRecordingStop() {
-    const { force, recording } = this.getState()
+    const { force, listening } = this.getState()
 
     this.stream.getTracks().forEach((mediaStreamTrack: MediaStreamTrack) => {
       mediaStreamTrack.stop()
@@ -104,14 +110,22 @@ export class ExternalRecognition extends AbstractRecognition<
       this.dispatchEvent(new CustomEvent('end'))
     }
     this.setState({
-      recording: false,
+      listening: false,
       force: false
     })
   }
 
   private onRecordingData(ev: Event): void
   private onRecordingData(ev: CustomEvent): void {
-    this.setState({ inputValue: ev.detail })
-    this.dispatchEvent(ev)
+    if (this.remoteCall) {
+      this.setState({ fetching: true })
+      this.dispatchEvent(new CustomEvent('fetching'))
+      this.remoteCall(ev.detail).then(this.onRemoteResult)
+    }
+  }
+
+  private onRemoteResult(res: any): void {
+    this.setState({ value: res, fetching: false })
+    this.dispatchEvent(new CustomEvent('data', { detail: res }))
   }
 }

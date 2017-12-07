@@ -5,8 +5,7 @@ export interface IRecognitionMap {
   end: IRecognitionEvent
   stop: IRecognitionEvent
   start: IRecognitionEvent
-  recording: IRecognitionEvent
-  sending: IRecognitionEvent
+  fetching: IRecognitionEvent
 }
 
 export interface IRecognitionEvent extends CustomEvent {

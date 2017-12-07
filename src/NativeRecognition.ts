@@ -1,7 +1,7 @@
 import { AbstractRecognition, IWindow } from './AbstractRecognition'
 
 export interface INativeRecognitionState {
-  inputValue?: string
+  value?: string
   listening?: boolean
   force?: boolean
 }
@@ -16,7 +16,7 @@ export class NativeRecognition extends AbstractRecognition<
     this.setState({
       listening: false,
       force: false,
-      inputValue: ''
+      value: ''
     })
     this.onSpeechRecognitionResult = this.onSpeechRecognitionResult.bind(this)
     this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
@@ -54,7 +54,7 @@ export class NativeRecognition extends AbstractRecognition<
     const { listening } = this.getState()
     if (!listening) {
       this.setState({
-        inputValue: ''
+        value: ''
       })
       this.speechRecognition.start()
     }
@@ -73,16 +73,16 @@ export class NativeRecognition extends AbstractRecognition<
   }
 
   private onChange(interimTranscript: string) {
-    const { inputValue } = this.getState()
+    const { value } = this.getState()
     this.setState({
-      inputValue: interimTranscript
+      value: interimTranscript
     })
     this.dispatchEvent(new CustomEvent('data', { detail: interimTranscript }))
   }
 
   private onFinal(finalTranscript: string) {
     this.setState({
-      inputValue: finalTranscript
+      value: finalTranscript
     })
     this.speechRecognition.stop()
   }
@@ -94,7 +94,7 @@ export class NativeRecognition extends AbstractRecognition<
   }
 
   private onSpeechRecognitionEnd() {
-    const { force, inputValue } = this.getState()
+    const { force, value } = this.getState()
     this.setState({
       listening: false
     })
@@ -104,7 +104,7 @@ export class NativeRecognition extends AbstractRecognition<
       })
       this.dispatchEvent(new CustomEvent('stop'))
     } else {
-      this.dispatchEvent(new CustomEvent('data', { detail: inputValue }))
+      this.dispatchEvent(new CustomEvent('data', { detail: value }))
       this.dispatchEvent(new CustomEvent('end'))
     }
   }

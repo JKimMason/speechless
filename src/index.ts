@@ -3,12 +3,13 @@ import { ExternalRecognition } from './ExternalRecognition'
 import { AbstractRecognition } from './AbstractRecognition'
 
 export function Recognition(
-  lang?: string
+  lang?: string,
+  remoteCall?: (blob?: Blob) => Promise<any>
 ): NativeRecognition | ExternalRecognition {
   if (NativeRecognition.isSupported()) {
     return new NativeRecognition(lang)
   }
-  return new ExternalRecognition(lang)
+  return new ExternalRecognition(lang, remoteCall)
 }
 
 export { NativeRecognition } from './NativeRecognition'

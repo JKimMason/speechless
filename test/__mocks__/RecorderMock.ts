@@ -8,7 +8,7 @@ export class Recorder extends EventTarget implements EventTarget {
   }
   start() {
     this.dispatchEvent(new CustomEvent('start'))
-    this.dispatchEvent(new CustomEvent('data', { detail: 'wow' }))
+    this.dispatchEvent(new CustomEvent('data', { detail: new Blob() }))
   }
   reset() {
     this.dispatchEvent(new CustomEvent('reset'))
