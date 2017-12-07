@@ -1,7 +1,7 @@
 {
   "name": "speechless",
   "version": "0.0.3",
-  "description": "Speech to text recognition tool native/external",
+  "description": "Speech to text recognition with remote fallback (Native/External)",
   "keywords": [
     "speech",
     "speech-to-text",
