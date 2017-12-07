@@ -2,7 +2,9 @@ import { NativeRecognition } from './NativeRecognition'
 import { ExternalRecognition } from './ExternalRecognition'
 import { AbstractRecognition } from './AbstractRecognition'
 
-export function Recognition(lang?: string): AbstractRecognition {
+export function Recognition(
+  lang?: string
+): NativeRecognition | ExternalRecognition {
   if (NativeRecognition.isSupported()) {
     return new NativeRecognition(lang)
   }
