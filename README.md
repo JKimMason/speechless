@@ -9,24 +9,37 @@
 
 ### Usage
 
-```js
+```typescript
 
-import SpeechToTextRecognition from 'speechless';
+import { Recognition } from 'speechless';
 
-const onChange = text => console.log(text)
-const onEnd = text => console.log(text)
+// Create event listeners
+const onData = (data: string | any) => console.log(data)
+const onStart = () => console.log('start')
+const onFetching = () => console.log('feching')
+const onEnd = () => console.log('ended')
 const onStop = () => console.log('stopped')
 
-const recognition = new SpeechToTextRecognition(onChange, onEnd, onStop, 'en')
+// Fallback function for remote call recognition
+function remoteCall(blob: Blob){
+  return fetch("/remote/recognition", {
+    method: "POST",
+    body: blob
+  })
+  .then(function(res){ return res.json(); })
+}
 
+// Create new instance
+const recognition = Recognition('en', remoteCall)
+
+// Connect the listeners
+recognition.addEventListener('end', onEnd)
+recognition.addEventListener('data', onData)
+recognition.addEventListener('fetching', onFetching)
+recognition.addEventListener('stop', onStop)
+recognition.addEventListener('start', onStart)
+
+// Start listening
 recognition.listen()
 
 ```
-
-### Features
-
-- Native chrome support
-- Recording with web workers
-- Optional visualization
-- Fallback to external API
-- Simplify the api
