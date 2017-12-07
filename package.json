@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@types/jest": "21.1.6",
-    "@types/node": "8.0.56",
+    "@types/node": "8.0.57",
     "@types/webspeechapi": "0.0.28",
     "babel-jest": "^21.2.0",
     "coveralls": "3.0.0",
