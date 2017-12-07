@@ -12,7 +12,7 @@ export class NativeRecognition extends AbstractRecognition<
   private speechRecognition: SpeechRecognition
 
   constructor(lang?: string) {
-    super(lang)
+    super(lang) /* istanbul ignore next */
     this.setState({
       listening: false,
       force: false,

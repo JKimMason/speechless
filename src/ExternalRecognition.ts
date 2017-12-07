@@ -1,6 +1,7 @@
 import { Recorder } from 'web-recorder'
 
 import { AbstractRecognition } from './AbstractRecognition'
+import { getNavigatorUserMedia } from './utils'
 
 export interface IExternalRecognitionState {
   inputValue?: string
@@ -17,7 +18,7 @@ export class ExternalRecognition extends AbstractRecognition<
   private stream: MediaStream
 
   constructor(lang?: string) {
-    super(lang)
+    super(lang) /* istanbul ignore next */
     this.setState({
       recording: false,
       force: false,
@@ -30,72 +31,13 @@ export class ExternalRecognition extends AbstractRecognition<
     return this
   }
 
-  getNavigatorUserMedia(
-    constraints: MediaStreamConstraints,
-    successCallback: NavigatorUserMediaSuccessCallback,
-    errorCallback: NavigatorUserMediaErrorCallback
-  ): void {
-    const navigator = window.navigator
-    const navigatorAsAny = window.navigator as any
-    if (navigator.getUserMedia) {
-      navigator.getUserMedia(constraints, successCallback, errorCallback)
-    } else if (navigatorAsAny.webkitGetUserMedia) {
-      navigatorAsAny.webkitGetUserMedia(
-        constraints,
-        successCallback,
-        errorCallback
-      )
-    } else if (navigatorAsAny.mozGetUserMedia) {
-      navigatorAsAny.mozGetUserMedia(
-        constraints,
-        successCallback,
-        errorCallback
-      )
-    } else if (
-      navigatorAsAny.mediaDevices &&
-      navigatorAsAny.mediaDevices.getUserMedia
-    ) {
-      navigatorAsAny.mediaDevices.getUserMedia(
-        constraints,
-        successCallback,
-        errorCallback
-      )
-    } else {
-      throw new Error('no userMedia support')
-    }
-  }
-  startRecording() {
-    this.getNavigatorUserMedia(
-      {
-        audio: {
-          advanced: [
-            {
-              echoCancelation: false
-            }
-          ]
-        }
-      },
-      this.onGotStream,
-      console.error
-    )
-  }
-  onGotStream(stream: MediaStream) {
-    this.stream = stream
-    this.recorder = new Recorder(stream)
-    this.recorder.addEventListener('start', this.onRecordingStart)
-    this.recorder.addEventListener('stop', this.onRecordingStop)
-    this.recorder.addEventListener('data', this.onRecordingData)
-
-    this.recorder.start()
-  }
-
   listen(): ExternalRecognition {
     const { recording } = this.getState()
     if (!recording) {
       this.setState({
         inputValue: ''
       })
-      this.startRecording()
+      this.record()
     }
     return this
   }
@@ -113,6 +55,36 @@ export class ExternalRecognition extends AbstractRecognition<
     return this
   }
 
+  getRecorder() {
+    return this.recorder
+  }
+
+  private record() {
+    getNavigatorUserMedia(
+      {
+        audio: {
+          advanced: [
+            {
+              echoCancelation: false
+            }
+          ]
+        }
+      },
+      this.onGotStream,
+      console.error
+    )
+  }
+
+  private onGotStream(stream: MediaStream) {
+    this.stream = stream
+    this.recorder = new Recorder(stream)
+    this.recorder.addEventListener('start', this.onRecordingStart)
+    this.recorder.addEventListener('stop', this.onRecordingStop)
+    this.recorder.addEventListener('data', this.onRecordingData)
+
+    this.recorder.start()
+  }
+
   private onRecordingStart() {
     this.setState({
       recording: true
@@ -121,13 +93,11 @@ export class ExternalRecognition extends AbstractRecognition<
 
   private onRecordingStop() {
     const { force, recording } = this.getState()
-    try {
-      this.stream.getTracks().forEach((mediaStreamTrack: MediaStreamTrack) => {
-        mediaStreamTrack.stop()
-      })
-    } catch (e) {
-      console.error(e)
-    }
+
+    this.stream.getTracks().forEach((mediaStreamTrack: MediaStreamTrack) => {
+      mediaStreamTrack.stop()
+    })
+
     if (force) {
       this.dispatchEvent(new CustomEvent('stop'))
     } else {

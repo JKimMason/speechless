@@ -4,6 +4,7 @@ export interface IRecognitionMap {
   data: IRecognitionEvent
   end: IRecognitionEvent
   stop: IRecognitionEvent
+  start: IRecognitionEvent
   recording: IRecognitionEvent
   sending: IRecognitionEvent
 }

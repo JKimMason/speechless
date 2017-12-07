@@ -11,42 +11,9 @@ let recorder: Recorder
 let onEndCallback = jest.fn()
 let onChangeCallback = jest.fn()
 let onStopCallback = jest.fn()
+let onStartCallback = jest.fn()
 
-describe('ExternalRecognition getUserMedia', () => {
-  beforeEach(() => {
-    recognition = new ExternalRecognition()
-  })
-  it('should throw an error no getUserMedia', () => {
-    delete (global as any).navigator
-    ;(global as any).navigator = {}
-    expect(() => recognition.listen()).toThrow()
-  })
-  it('should use webkitGetUserMedia', () => {
-    delete (global as any).navigator
-    ;(global as any).navigator = {
-      webkitGetUserMedia: jest.fn()
-    }
-    expect(() => recognition.listen()).not.toThrow()
-  })
-  it('should use mozGetUserMedia', () => {
-    delete (global as any).navigator
-    ;(global as any).navigator = {
-      mozGetUserMedia: jest.fn()
-    }
-    expect(() => recognition.listen()).not.toThrow()
-  })
-  it('should use mozGetUserMedia', () => {
-    delete (global as any).navigator
-    ;(global as any).navigator = {
-      mediaDevices: {
-        getUserMedia: jest.fn()
-      }
-    }
-    expect(() => recognition.listen()).not.toThrow()
-  })
-})
-
-describe.only('ExternalRecognition', () => {
+describe('ExternalRecognition', () => {
   beforeEach(() => {
     ;(window as any).AudioContext = AudioContextMock
 
@@ -56,10 +23,11 @@ describe.only('ExternalRecognition', () => {
         return cb(new MediaStreamMock())
       }
     }
-    recognition = new ExternalRecognition()
+    recognition = new ExternalRecognition('en')
     recognition.addEventListener('end', onEndCallback)
     recognition.addEventListener('data', onChangeCallback)
     recognition.addEventListener('stop', onStopCallback)
+    recognition.addEventListener('start', onStartCallback)
     recorder = (recognition as any).recorder
   })
 
@@ -68,7 +36,15 @@ describe.only('ExternalRecognition', () => {
     onChangeCallback.mockReset()
     onStopCallback.mockReset()
   })
+  it('should set lang', () => {
+    recognition = new ExternalRecognition('he')
 
+    expect(recognition.getLang()).toEqual('he')
+
+    recognition = new ExternalRecognition(undefined)
+
+    expect(recognition.getLang()).toEqual('en')
+  })
   it('should start recording', () => {
     recognition.listen()
     const state: IExternalRecognitionState = recognition.getState()
@@ -82,15 +58,29 @@ describe.only('ExternalRecognition', () => {
 
     expect(state.recording).toBeTruthy()
   })
-  it('should do nothing on stop a stop recording', done => {
+  it('should stop recording', () => {
     recognition.listen()
-    setTimeout(() => {
-      recognition.stop()
-      const state: IExternalRecognitionState = recognition.getState()
+    const recorder = recognition.getRecorder()
+    recorder.abort()
+    const state: IExternalRecognitionState = recognition.getState()
+    expect(onEndCallback).toBeCalled()
+    expect(state.recording).toBeFalsy()
+  })
+  it('should force stop recording', () => {
+    recognition.listen()
+    recognition.stop()
+    const state: IExternalRecognitionState = recognition.getState()
 
-      expect(onStopCallback).toBeCalled()
-      expect(state.recording).toBeFalsy()
-      done()
-    }, 1000)
+    expect(onStopCallback).toBeCalled()
+    expect(state.recording).toBeFalsy()
+  })
+  it('should do nothing if trying to stop a stopped recording', () => {
+    const prevState: IExternalRecognitionState = recognition.getState()
+    recognition.stop()
+    const nextState: IExternalRecognitionState = recognition.getState()
+    expect(prevState).toEqual(nextState)
+    expect(onEndCallback).not.toBeCalled()
+    expect(onStopCallback).not.toBeCalled()
+    expect(onStartCallback).not.toBeCalled()
   })
 })
