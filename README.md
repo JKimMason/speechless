@@ -17,6 +17,19 @@ https://speechless.surge.sh/
 
 https://puemos.github.io/speechless
 
+### Install
+
+```bash
+$ npm i speechless --save
+```
+
+```sh
+$ yarn add speechless
+```
+
+```html
+<script src="https://rawgit.com/puemos/speechless/master/dist/speechless.umd.js"></script>
+```
 
 ### Usage
 
