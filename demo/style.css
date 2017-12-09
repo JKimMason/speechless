@@ -1,0 +1,52 @@
+#history,
+#logs {
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #eeeeee;
+}
+
+#input {
+  width: 60vw;
+}
+
+.uk-navbar-container:not(.uk-navbar-transparent) {
+  background: linear-gradient(to left, #ec4747, #f01e1e);
+}
+
+.uk-navbar-nav > li.uk-active > a {
+  color: white;
+}
+
+.logo {
+  font-weight: 500;
+  font-size: 25px;
+  color: white;
+  margin-left: 20px;
+}
+
+.report {
+  color: #23ff00;
+  opacity: 0.4;
+  padding: 5px;
+  transform: translateX(-5px);
+  animation: enter forwards 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.report-time {
+  margin-right: 10px;
+}
+.loader {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.input-line {
+  position: relative;
+}
+
+@keyframes enter {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

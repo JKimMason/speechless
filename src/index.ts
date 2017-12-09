@@ -2,7 +2,7 @@ import { NativeRecognition } from './NativeRecognition'
 import { ExternalRecognition } from './ExternalRecognition'
 import { AbstractRecognition } from './AbstractRecognition'
 
-export function Recognition(
+function RecognitionFactory(
   lang?: string,
   remoteCall?: (blob?: Blob) => Promise<any>
 ): NativeRecognition | ExternalRecognition {
@@ -12,5 +12,6 @@ export function Recognition(
   return new ExternalRecognition(lang, remoteCall)
 }
 
+export { RecognitionFactory }
 export { NativeRecognition } from './NativeRecognition'
 export { ExternalRecognition } from './ExternalRecognition'

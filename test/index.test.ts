@@ -1,8 +1,6 @@
 import { SpeechRecognitionMock } from 'speech-recognition-mock'
-import { Recognition } from '../src'
-import { IWindow, AbstractRecognition } from '../src/AbstractRecognition'
-import { ExternalRecognition } from '../src/ExternalRecognition'
-import { NativeRecognition } from '../src/NativeRecognition'
+import { RecognitionFactory, ExternalRecognition, NativeRecognition } from '../src'
+import { IWindow } from '../src/AbstractRecognition'
 
 describe('ExternalRecognition', () => {
   beforeEach(() => {
@@ -10,12 +8,12 @@ describe('ExternalRecognition', () => {
   })
 
   it('should throw an error no getUserMedia', () => {
-    const recognition = Recognition()
+    const recognition = RecognitionFactory()
     expect(recognition instanceof NativeRecognition).toBeTruthy()
   })
   it('should use getUserMedia', () => {
     delete (window as IWindow).webkitSpeechRecognition
-    const recognition = Recognition('en')
+    const recognition = RecognitionFactory('en')
     expect(recognition instanceof ExternalRecognition).toBeTruthy()
   })
 })

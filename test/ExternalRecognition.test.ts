@@ -1,4 +1,4 @@
-import { ExternalRecognition, Recognition } from '../src'
+import { ExternalRecognition } from '../src'
 import { IWindow } from '../src/AbstractRecognition'
 import { IExternalRecognitionState } from '../src/ExternalRecognition'
 import { MediaStreamMock } from './__mocks__/MediaStreamMock'
@@ -16,29 +16,36 @@ let onResultCallback = function onResult(blob: Blob) {
   return Promise.resolve('external')
 }
 
+function setup(lang: string, cb?) {
+  ;(window as any).AudioContext = AudioContextMock
+
+  delete (global as any).navigator
+  ;(global as any).navigator = {
+    getUserMedia: function(_, cb): MediaStream {
+      return cb(new MediaStreamMock())
+    }
+  }
+  recognition = new ExternalRecognition(lang, cb)
+  recognition.addEventListener('end', onEndCallback)
+  recognition.addEventListener('data', onDataCallback)
+  recognition.addEventListener('fetching', onFetchingCallback)
+  recognition.addEventListener('stop', onStopCallback)
+  recognition.addEventListener('start', onStartCallback)
+}
+
 describe('ExternalRecognition', () => {
   beforeEach(() => {
-    ;(window as any).AudioContext = AudioContextMock
-
-    delete (global as any).navigator
-    ;(global as any).navigator = {
-      getUserMedia: function(_, cb): MediaStream {
-        return cb(new MediaStreamMock())
-      }
-    }
-    recognition = Recognition('en', onResultCallback) as ExternalRecognition
-    recognition.addEventListener('end', onEndCallback)
-    recognition.addEventListener('data', onDataCallback)
-    recognition.addEventListener('fetching', onFetchingCallback)
-    recognition.addEventListener('stop', onStopCallback)
-    recognition.addEventListener('start', onStartCallback)
+    setup('en', onResultCallback)
   })
 
   afterEach(() => {
     onEndCallback.mockReset()
     onDataCallback.mockReset()
+    onFetchingCallback.mockReset()
     onStopCallback.mockReset()
+    onStartCallback.mockReset()
   })
+
   it('should set lang', () => {
     recognition = new ExternalRecognition('he', jest.fn())
 
@@ -60,7 +67,7 @@ describe('ExternalRecognition', () => {
   it('should stop listening', done => {
     recognition.listen()
     const recorder = recognition.getRecorder()
-    recorder.abort()
+    recorder.stop()
     setImmediate(() => {
       const state: IExternalRecognitionState = recognition.getState()
       expect(onFetchingCallback).toBeCalled()
@@ -70,13 +77,25 @@ describe('ExternalRecognition', () => {
       done()
     })
   })
-  it('should force stop listening', () => {
+  it('should force stop listening', done => {
     recognition.listen()
     recognition.stop()
     const state: IExternalRecognitionState = recognition.getState()
-
-    expect(onStopCallback).toBeCalled()
-    expect(state.listening).toBeFalsy()
+    setImmediate(() => {
+      expect(onEndCallback).toBeCalled()
+      expect(state.listening).toBeFalsy()
+      done()
+    })
+  })
+  it('should kill listening', done => {
+    recognition.listen()
+    recognition.kill()
+    const state: IExternalRecognitionState = recognition.getState()
+    setImmediate(() => {
+      expect(onStopCallback).toBeCalled()
+      expect(state.listening).toBeFalsy()
+      done()
+    })
   })
   it('should do nothing if trying to stop a stopped listening', () => {
     const prevState: IExternalRecognitionState = recognition.getState()
@@ -88,15 +107,15 @@ describe('ExternalRecognition', () => {
     expect(onStartCallback).not.toBeCalled()
   })
   it("should not dispatch fetching if didn't set remoteCall", done => {
-    recognition = Recognition('en') as ExternalRecognition
+    recognition = new ExternalRecognition('en')
 
     recognition.addEventListener('fetching', onFetchingCallback)
     recognition.listen()
     const recorder = recognition.getRecorder()
-    recorder.abort()
+    recorder.stop()
     setImmediate(() => {
       const state: IExternalRecognitionState = recognition.getState()
-      expect(onFetchingCallback).toBeCalled()
+      expect(onFetchingCallback).not.toBeCalled()
       expect(state.listening).toBeFalsy()
       done()
     })

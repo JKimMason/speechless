@@ -1,4 +1,4 @@
-# Speech to text recognition tool that's simplified the API
+# Speech to text recognition with remote fallback
 
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Greenkeeper badge](https://badges.greenkeeper.io/puemos/speechless.svg)](https://greenkeeper.io/)

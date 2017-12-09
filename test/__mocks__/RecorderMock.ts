@@ -14,7 +14,7 @@ export class Recorder extends EventTarget implements EventTarget {
     this.dispatchEvent(new CustomEvent('reset'))
   }
   stop() {
-    this.dispatchEvent(new CustomEvent('stop'))
+    this.dispatchEvent(new CustomEvent('end'))
   }
   abort() {
     this.dispatchEvent(new CustomEvent('stop'))

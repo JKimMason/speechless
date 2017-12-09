@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="favicon.png">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/css/uikit.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/js/uikit-icons.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js"></script>
+    <title>Speechless Demo</title>
+</head>
+
+<body>
+    <style>
+      
+    </style>
+
+    <nav class="uk-navbar-container" uk-navbar>
+
+        <div class="uk-navbar-left">
+
+            <ul class="uk-navbar-nav">
+                <li class="uk-active">
+                    <div class="logo">
+                        <img src="logo.svg" alt="">
+                        <span>Speechless</span>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+        <div class="uk-navbar-right">
+
+            <ul class="uk-navbar-nav">
+                <li class="uk-active">
+                    <a href="https://puemos.github.io/speechless">Docs</a>
+                </li>
+                <li class="uk-active">
+                    <a href="https://github.com/puemos/speechless" uk-icon="icon: github"></a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+    <section class="uk-flex uk-margin uk-flex-column uk-container-large">
+
+        <div class="uk-flex uk-padding uk-flex-middle uk-flex-column uk-container-large">
+
+            <div class="uk-flex-row uk-margin input-line">
+                <input class="uk-input " type="text" id="input" placeholder="Press on the listen button..." />
+                <div class="loader" id="loader">
+                    <div uk-spinner></div>
+                </div>
+            </div>
+            <div class="uk-flex-row uk-margin" style="margin-top:2rem">
+                <button id="listen" class="uk-button uk-button-primary ">
+                    <span uk-icon="icon: play"></span>
+                    <span>Listen</span>
+                </button>
+                <button id="stop" class="uk-button uk-button-primary">
+                    <span uk-icon="icon: ban"></span>
+                    <span>Stop</span>
+                </button>
+                <button id="kill" class="uk-button uk-button-primary">
+                    <span uk-icon="icon: bolt"></span>
+                    <span>Kill</span>
+                </button>
+                <button id="reset" class="uk-button uk-button-primary">
+                    <span uk-icon="icon: trash"></span>
+                    <span>Reset</span>
+                </button>
+            </div>
+        </div>
+        <div class="uk-flex uk-flex-row uk-padding">
+            <div class="uk-flex uk-flex-column uk-width-1-2 uk-padding ">
+                <h4 class="">
+                    <span uk-icon="icon: comments"></span>
+                    <span>Recognition history:</span>
+                </h4>
+
+                <ul id="history" class="uk-card uk-list uk-background-secondary"></ul>
+            </div>
+            <div class="uk-flex uk-flex-column uk-width-1-2 uk-padding ">
+                <h4 class="">
+                    <span uk-icon="icon: cog"></span>
+                    <span>Events log:</span>
+                </h4>
+
+                <ul id="logs" class="uk-card uk-list uk-background-secondary"></ul>
+            </div>
+        </div>
+    </section>
+
+
+    <script src="../dist/speechless.umd.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

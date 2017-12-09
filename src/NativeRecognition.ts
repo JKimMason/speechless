@@ -6,9 +6,7 @@ export interface INativeRecognitionState {
   force?: boolean
 }
 
-export class NativeRecognition extends AbstractRecognition<
-  INativeRecognitionState
-> {
+export class NativeRecognition extends AbstractRecognition<INativeRecognitionState> {
   private speechRecognition: SpeechRecognition
 
   constructor(lang?: string) {
@@ -27,9 +25,7 @@ export class NativeRecognition extends AbstractRecognition<
   }
 
   static getSpeechRecognition(): SpeechRecognitionStatic {
-    const {
-      webkitSpeechRecognition: SpeechRecognition
-    }: IWindow = window as IWindow
+    const { webkitSpeechRecognition: SpeechRecognition }: IWindow = window as IWindow
 
     return SpeechRecognition
   }
@@ -88,6 +84,8 @@ export class NativeRecognition extends AbstractRecognition<
   }
 
   private onSpeechRecognitionStart() {
+    this.dispatchEvent(new CustomEvent('start'))
+
     this.setState({
       listening: true
     })

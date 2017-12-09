@@ -3,29 +3,27 @@ import { Recorder } from 'web-recorder'
 import { AbstractRecognition } from './AbstractRecognition'
 import { getNavigatorUserMedia } from './utils'
 
+export interface IExternalRecognition extends AbstractRecognition<IExternalRecognitionState> {
+  recorder: Recorder
+  getRecorder(): Recorder
+}
+
 export interface IExternalRecognitionState {
   value?: any
   listening?: boolean
   fetching?: boolean
-  force?: boolean
 }
 
-export class ExternalRecognition extends AbstractRecognition<
-  IExternalRecognitionState
-> {
+export class ExternalRecognition extends AbstractRecognition<IExternalRecognitionState> {
   public recorder: Recorder
   private speechRecognition: SpeechRecognition
   private audioContext: AudioContext
   private stream: MediaStream
 
-  constructor(
-    lang?: string,
-    private remoteCall?: (blob?: Blob) => Promise<any>
-  ) {
+  constructor(lang?: string, private remoteCall?: (blob?: Blob) => Promise<any>) {
     super(lang) /* istanbul ignore next */
     this.setState({
       listening: false,
-      force: false,
       fetching: false,
       value: null
     })
@@ -33,6 +31,7 @@ export class ExternalRecognition extends AbstractRecognition<
     this.onRecordingStart = this.onRecordingStart.bind(this)
     this.onRecordingStop = this.onRecordingStop.bind(this)
     this.onRemoteResult = this.onRemoteResult.bind(this)
+    this.onRecordingEnd = this.onRecordingEnd.bind(this)
     this.onGotStream = this.onGotStream.bind(this)
     return this
   }
@@ -45,18 +44,19 @@ export class ExternalRecognition extends AbstractRecognition<
       })
       this.record()
     }
+
     return this
+  }
+
+  kill() {
+    this.recorder.abort()
   }
 
   stop(): ExternalRecognition {
     const { listening } = this.getState()
 
     if (listening) {
-      this.setState({
-        force: true
-      })
-      this.recorder.reset()
-      this.recorder.abort()
+      this.recorder.stop()
     }
     return this
   }
@@ -83,49 +83,47 @@ export class ExternalRecognition extends AbstractRecognition<
 
   private onGotStream(stream: MediaStream) {
     this.stream = stream
-    this.recorder = new Recorder(stream)
+    this.recorder = new Recorder(stream, {})
     this.recorder.addEventListener('start', this.onRecordingStart)
+    this.recorder.addEventListener('end', this.onRecordingEnd)
     this.recorder.addEventListener('stop', this.onRecordingStop)
     this.recorder.addEventListener('data', this.onRecordingData)
-
     this.recorder.start()
   }
 
   private onRecordingStart() {
+    this.dispatchEvent(new CustomEvent('start'))
     this.setState({
       listening: true
     })
   }
-
-  private onRecordingStop() {
-    const { force, listening } = this.getState()
-
-    this.stream.getTracks().forEach((mediaStreamTrack: MediaStreamTrack) => {
-      mediaStreamTrack.stop()
-    })
-
-    if (force) {
-      this.dispatchEvent(new CustomEvent('stop'))
-    } else {
-      this.dispatchEvent(new CustomEvent('end'))
-    }
+  private onRecordingEnd() {
+    const { value } = this.getState()
     this.setState({
-      listening: false,
-      force: false
+      listening: false
+    })
+    if (this.remoteCall) {
+      this.dispatchEvent(new CustomEvent('fetching'))
+      this.remoteCall(value).then(this.onRemoteResult)
+    }
+  }
+  private onRecordingStop(ev: Event) {
+    const { listening } = this.getState()
+    this.dispatchEvent(new CustomEvent('stop'))
+    this.setState({
+      listening: false
     })
   }
 
   private onRecordingData(ev: Event): void
   private onRecordingData(ev: CustomEvent): void {
-    if (this.remoteCall) {
-      this.setState({ fetching: true })
-      this.dispatchEvent(new CustomEvent('fetching'))
-      this.remoteCall(ev.detail).then(this.onRemoteResult)
-    }
+    this.setState({ fetching: true, value: ev.detail })
   }
 
   private onRemoteResult(res: any): void {
+    const { listening } = this.getState()
     this.setState({ value: res, fetching: false })
     this.dispatchEvent(new CustomEvent('data', { detail: res }))
+    this.dispatchEvent(new CustomEvent('end'))
   }
 }
