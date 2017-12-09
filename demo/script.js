@@ -1,6 +1,5 @@
 ;(function() {
   var recognition
-  var inputElement = document.getElementById('input')
   var loaderElement = document.getElementById('loader')
   var logsElement = document.getElementById('logs')
   var historyElement = document.getElementById('history')
@@ -8,7 +7,34 @@
   var lastEvent
 
   loaderElement.style.display = 'none'
-
+  function remoteCall(content) {
+    return fetch(
+      'https://content-speech.googleapis.com/v1/speech:recognize?alt=json&key=AIzaSyBW2ROnSfou8fo0J7Pa-B2uPq3U45V-jnk',
+      {
+        method: 'post',
+        body: JSON.stringify({
+          config: {
+            encoding: 'LINEAR16',
+            sampleRateHertz: 44100,
+            languageCode: 'en',
+            maxAlternatives: 1
+          },
+          audio: {
+            content
+          }
+        })
+      }
+    )
+  }
+  function toBase64(blob) {
+    var reader = new window.FileReader()
+    return new Promise(resolve => {
+      reader.readAsDataURL(blob)
+      reader.onloadend = function() {
+        resolve(reader.result)
+      }
+    })
+  }
   function isEmpty(obj) {
     for (var key in obj) {
       if (obj.hasOwnProperty(key)) return false
@@ -50,57 +76,32 @@
 
     historyElement.insertBefore(report, historyElement.firstChild)
   }
-  recognition = new Speechless.RecognitionFactory(
-    'en',
-    blob => {
-      return new Promise(resolve => {
-        var reader = new window.FileReader()
-        reader.readAsDataURL(blob)
-        reader.onloadend = function() {
-          base64data = reader.result
-          fetch(
-            'https://content-speech.googleapis.com/v1/speech:recognize?alt=json&key=AIzaSyBW2ROnSfou8fo0J7Pa-B2uPq3U45V-jnk',
-            {
-              method: 'post',
-              body: JSON.stringify({
-                config: {
-                  encoding: 'LINEAR16',
-                  sampleRateHertz: 44100,
-                  languageCode: 'en',
-                  maxAlternatives: 1
-                },
-                audio: {
-                  content: base64data.substr(base64data.indexOf(',') + 1)
-                }
-              })
-            }
-          )
-            .then(res => res.json())
-            .then(res => {
-              if (!res || isEmpty(res)) {
-                return resolve('')
-              }
-              return resolve(res.results['0'].alternatives['0'].transcript)
-            })
-        }
-      })
-    },
-    0
-  )
-  recognition.addEventListener('start', logger)
-  recognition.addEventListener('end', logger)
-  recognition.addEventListener('data', logger)
-  recognition.addEventListener('stop', logger)
-  recognition.addEventListener('fetching', () => {
-    loaderElement.style.display = ''
-  })
-  recognition.addEventListener('fetching', logger)
-  recognition.addEventListener('data', e => {
-    loaderElement.style.display = 'none'
-
-    inputElement.value = e.detail
-    history(e.detail)
-  })
+  function setup(type) {
+    recognition = new Speechless[type || 'RecognitionFactory']('en', blob => {
+      return toBase64(blob)
+        .then(base64data => base64data.substr(base64data.indexOf(',') + 1))
+        .then(remoteCall)
+        .then(res => res.json())
+        .then(res => {
+          if (!res || isEmpty(res)) {
+            return ''
+          }
+          return res.results[0].alternatives[0].transcript
+        })
+    })
+    recognition.addEventListener('start', logger)
+    recognition.addEventListener('end', logger)
+    recognition.addEventListener('data', logger)
+    recognition.addEventListener('stop', logger)
+    recognition.addEventListener('fetching', logger)
+    recognition.addEventListener('fetching', () => {
+      loaderElement.style.display = ''
+    })
+    recognition.addEventListener('data', e => {
+      loaderElement.style.display = 'none'
+      history(e.detail)
+    })
+  }
 
   document.getElementById('listen').addEventListener('click', () => {
     recognition.listen()
@@ -113,7 +114,26 @@
   document.getElementById('kill').addEventListener('click', () => {
     recognition.kill()
   })
-  document.getElementById('reset').addEventListener('click', () => {
-    inputElement.value = ''
+  document.getElementById('reset').addEventListener('click', () => {})
+  document.getElementById('external').addEventListener('click', () => {
+    document.getElementById('auto').classList.remove('active')
+    document.getElementById('external').classList.add('active')
+    document.getElementById('native').classList.remove('active')
+    setup('ExternalRecognition')
   })
+  document.getElementById('native').addEventListener('click', () => {
+    document.getElementById('auto').classList.remove('active')
+    document.getElementById('external').classList.remove('active')
+    document.getElementById('native').classList.add('active')
+    setup('NativeRecognition')
+  })
+  document.getElementById('auto').addEventListener('click', () => {
+    document.getElementById('auto').classList.add('active')
+    document.getElementById('external').classList.remove('active')
+    document.getElementById('native').classList.remove('active')
+    setup()
+  })
+
+  setup()
+  document.getElementById('auto').classList.add('active')
 })()

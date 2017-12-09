@@ -23,84 +23,92 @@
 <body>
     <style>
     </style>
-    <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
 
-        <nav class="uk-navbar-container" uk-navbar>
+    <nav class="uk-navbar-container" uk-navbar>
 
-            <div class="uk-navbar-left">
+        <div class="uk-navbar-left">
 
-                <ul class="uk-navbar-nav">
-                    <li class="uk-active">
-                        <div class="logo">
-                            <img src="logo.svg" alt="">
-                            <span>Speechless</span>
+            <ul class="uk-navbar-nav">
+                <li class="uk-active">
+                    <div class="logo uk-flex uk-flex-row">
+                        <div>
+                            <img src="logo.svg" alt="" style="min-width: 40px;">
                         </div>
-                    </li>
-                </ul>
+                        <div class="uk-visible@s">&nbsp;Speechless</div>
+                    </div>
+                </li>
+            </ul>
 
-            </div>
-            <div class="uk-navbar-right">
+        </div>
+        <div class="uk-navbar-right">
 
-                <ul class="uk-navbar-nav">
-                    <li class="uk-active">
-                        <a href="https://github.com/puemos/speechless/tree/master/demo">
-                            <span>Src &nbsp;</span>
-                            <span uk-icon="icon: code"></span>
-                        </a>
-                    </li>
-                    <li class="uk-active">
-                        <a href="https://puemos.github.io/speechless">Docs</a>
-                    </li>
-                    <li class="uk-active">
-                        <a href="https://github.com/puemos/speechless" uk-icon="icon: github"></a>
-                    </li>
-                </ul>
+            <ul class="uk-navbar-nav">
+                <li class="uk-active">
+                    <a href="https://github.com/puemos/speechless/tree/master/demo">
+                        <span uk-icon="icon: code"></span>
+                    </a>
+                </li>
+                <li class="uk-active">
+                    <a href="https://puemos.github.io/speechless">Docs</a>
+                </li>
+                <li class="uk-active">
+                    <a href="https://github.com/puemos/speechless" uk-icon="icon: github"></a>
+                </li>
+            </ul>
 
-            </div>
-        </nav>
-    </div>
+        </div>
+    </nav>
     <section class="uk-flex uk-margin uk-flex-column uk-container-large">
 
         <div class="uk-flex uk-padding uk-flex-middle uk-flex-column uk-container-large">
 
-            <div class="uk-flex-row uk-margin input-line">
-                <input class="uk-input " type="text" id="input" placeholder="Press on the listen button..." />
-                <div class="loader" id="loader">
-                    <div uk-spinner></div>
-                </div>
+
+            <div class="uk-flex-row uk-flex-wrap uk-flex-wrap-around uk-margin">
+                <div class="loader" id="loader"></div>
+
+                <button id="native" class="uk-button uk-button-primary ">
+                    <span class="label">Native</span>
+                </button>
+                <button id="auto" class="uk-button uk-button-primary">
+                    <span class="label">Auto</span>
+                </button>
+                <button id="external" class="uk-button uk-button-primary">
+                    <span class="label">External</span>
+                </button>
             </div>
-            <div class="uk-flex-row uk-margin" style="margin-top:2rem">
-                <button id="listen" class="uk-button uk-button-primary ">
+            <div class="uk-flex-row uk-flex-wrap uk-flex-wrap-around uk-margin" style="margin-top:2rem">
+                <button id="listen" class="uk-button uk-button-default ">
                     <span uk-icon="icon: play"></span>
-                    <span>Listen</span>
+                    <span class="label">Listen</span>
                 </button>
-                <button id="stop" class="uk-button uk-button-primary">
+                <button id="stop" class="uk-button uk-button-default">
                     <span uk-icon="icon: ban"></span>
-                    <span>Stop</span>
+                    <span class="label">Stop</span>
                 </button>
-                <button id="kill" class="uk-button uk-button-primary">
+                <button id="kill" class="uk-button uk-button-default">
                     <span uk-icon="icon: bolt"></span>
-                    <span>Kill</span>
+                    <span class="label">Kill</span>
                 </button>
-                <button id="reset" class="uk-button uk-button-primary">
+                <button id="reset" class="uk-button uk-button-default">
                     <span uk-icon="icon: trash"></span>
-                    <span>Reset</span>
+                    <span class="label">Reset</span>
                 </button>
             </div>
+
         </div>
-        <div class="uk-flex uk-flex-row uk-padding">
-            <div class="uk-flex uk-flex-column uk-width-1-2 uk-padding ">
+        <div class="uk-flex uk-flex-row uk-flex-wrap uk-flex-wrap-around uk-padding">
+            <div class="uk-flex uk-flex-column uk-width-1-2@l uk-width-1-2@m uk-padding lists">
                 <h4 class="">
                     <span uk-icon="icon: comments"></span>
-                    <span>Recognition history:</span>
+                    <span class="label">Recognition history:</span>
                 </h4>
 
                 <ul id="history" class="uk-card uk-list uk-background-secondary"></ul>
             </div>
-            <div class="uk-flex uk-flex-column uk-width-1-2 uk-padding ">
+            <div class="uk-flex uk-flex-column uk-width-1-2@l uk-width-1-2@m uk-padding lists">
                 <h4 class="">
                     <span uk-icon="icon: cog"></span>
-                    <span>Events log:</span>
+                    <span class="label">Events log:</span>
                 </h4>
 
                 <ul id="logs" class="uk-card uk-list uk-background-secondary"></ul>

@@ -1,10 +1,9 @@
 import { ExternalRecognition } from '../src'
 import { IWindow } from '../src/AbstractRecognition'
 import { IExternalRecognitionState } from '../src/ExternalRecognition'
-import { MediaStreamMock } from './__mocks__/MediaStreamMock'
-import { AudioContextMock } from './__mocks__/AudioContextMock'
 import { setTimeout } from 'timers'
 import { Recorder } from 'web-recorder/dist/types/recorder'
+import { AudioContext } from 'standardized-audio-context-mock'
 
 let recognition: ExternalRecognition
 let onEndCallback = jest.fn()
@@ -17,12 +16,12 @@ let onResultCallback = function onResult(blob: Blob) {
 }
 
 function setup(lang: string, cb?) {
-  ;(window as any).AudioContext = AudioContextMock
+  ;(window as any).AudioContext = AudioContext
 
   delete (global as any).navigator
   ;(global as any).navigator = {
-    getUserMedia: function(_, cb): MediaStream {
-      return cb(new MediaStreamMock())
+    getUserMedia: function(_, cb): any {
+      return cb({})
     }
   }
   recognition = new ExternalRecognition(lang, cb)

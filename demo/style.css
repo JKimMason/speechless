@@ -5,6 +5,14 @@
   border: 1px solid #eeeeee;
 }
 
+.lists{
+  min-width: 300px;
+  
+}
+button{
+  min-width: 140px !important;
+  margin-bottom: 10px !important;
+}
 #input {
   width: 60vw;
 }
@@ -16,7 +24,12 @@
 .uk-navbar-nav > li.uk-active > a {
   color: white;
 }
-
+button.active {
+  background-color: #dc56d2 !important;
+}
+.label {
+  vertical-align: -2px;
+}
 .logo {
   font-weight: 500;
   font-size: 25px;
