@@ -1,8 +1,7 @@
 {
   "name": "speechless",
-  "version": "0.0.3",
-  "description":
-    "Speech to text recognition with remote fallback (Native/External)",
+  "version": "0.1.0",
+  "description": "Speech to text recognition with remote fallback (Native/External)",
   "keywords": [
     "speech",
     "speech-to-text",
@@ -14,7 +13,9 @@
   "main": "dist/speechless.umd.js",
   "module": "dist/speechless.es5.js",
   "typings": "dist/types/speechless.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "author": "Shy <puemos@gmail.com>",
   "repository": {
     "type": "git",
@@ -29,8 +30,7 @@
     "prepush": "npm run test:prod && npm run build",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build":
-      "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "build": "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
     "start": "tsc -w & rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -48,14 +48,23 @@
     "moduleNameMapper": {
       "web-recorder": "<rootDir>/test/__mocks__/RecorderMock.ts"
     },
-    "setupFiles": ["./test/setup/setup.js"],
+    "setupFiles": [
+      "./test/setup/setup.js"
+    ],
     "transform": {
       ".+\\.js$": "babel-jest",
       ".+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": ["ts", "tsx", "js"],
-    "coveragePathIgnorePatterns": ["/node_modules/", "/test/"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 90,
