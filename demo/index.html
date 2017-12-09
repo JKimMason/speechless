@@ -17,6 +17,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js"></script>
     <script src="https://rawgit.com/puemos/speechless/master/dist/speechless.umd.js"></script>
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72648122-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-72648122-2');
+    </script>
+
     <title>Speechless Demo</title>
 </head>
 
@@ -88,10 +98,6 @@
                 <button id="kill" class="uk-button uk-button-default">
                     <span uk-icon="icon: bolt"></span>
                     <span class="label">Kill</span>
-                </button>
-                <button id="reset" class="uk-button uk-button-default">
-                    <span uk-icon="icon: trash"></span>
-                    <span class="label">Reset</span>
                 </button>
             </div>
 

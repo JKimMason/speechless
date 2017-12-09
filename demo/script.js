@@ -104,33 +104,38 @@
   }
 
   document.getElementById('listen').addEventListener('click', () => {
+    gtag('event', 'listen');
     recognition.listen()
     lastHistory = moment()
     lastEvent = moment()
   })
   document.getElementById('stop').addEventListener('click', () => {
+    gtag('event', 'stop');
     recognition.stop()
   })
   document.getElementById('kill').addEventListener('click', () => {
+    gtag('event', 'kill');
     recognition.kill()
   })
-  document.getElementById('reset').addEventListener('click', () => {})
   document.getElementById('external').addEventListener('click', () => {
     document.getElementById('auto').classList.remove('active')
     document.getElementById('external').classList.add('active')
     document.getElementById('native').classList.remove('active')
+    gtag('event', 'external');
     setup('ExternalRecognition')
   })
   document.getElementById('native').addEventListener('click', () => {
     document.getElementById('auto').classList.remove('active')
     document.getElementById('external').classList.remove('active')
     document.getElementById('native').classList.add('active')
+    gtag('event', 'native');
     setup('NativeRecognition')
   })
   document.getElementById('auto').addEventListener('click', () => {
     document.getElementById('auto').classList.add('active')
     document.getElementById('external').classList.remove('active')
     document.getElementById('native').classList.remove('active')
+    gtag('event', 'auto');
     setup()
   })
 
