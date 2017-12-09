@@ -4,6 +4,8 @@
   var loaderElement = document.getElementById('loader')
   var logsElement = document.getElementById('logs')
   var historyElement = document.getElementById('history')
+  var lastHistory
+  var lastEvent
 
   loaderElement.style.display = 'none'
 
@@ -13,25 +15,40 @@
     }
     return true
   }
-  function prepareReport(content) {
-    var report = document.createElement('li')
-    var reportTime = document.createElement('span')
-    var reportContent = document.createElement('span')
+  function prepareReport(content, time) {
+    var report = document.createElement('div')
+    var reportTime = document.createElement('div')
+    var reportContent = document.createElement('div')
 
-    reportTime.innerHTML = `${moment().format('HH:mm:ss:SSSS')}`
+    reportTime.innerHTML = `+${time}`
     reportTime.classList.add('uk-label')
     reportTime.classList.add('report-time')
     reportContent.innerHTML = `${content}`
-    report.appendChild(reportTime)
     report.appendChild(reportContent)
+    report.appendChild(reportTime)
     report.classList.add('report')
+    report.classList.add('uk-flex')
+    report.classList.add('uk-flex-row')
+    report.classList.add('uk-flex-between')
     return report
   }
   function logger(event) {
-    logsElement.insertBefore(prepareReport(event.type), logsElement.firstChild)
+    const now = moment()
+    var diff = now.diff(lastEvent || now, 'milliseconds')
+    lastEvent = now
+
+    const report = prepareReport(event.type, diff)
+
+    logsElement.insertBefore(report, logsElement.firstChild)
   }
   function history(text) {
-    historyElement.insertBefore(prepareReport(text), historyElement.firstChild)
+    const now = moment()
+    var diff = now.diff(lastHistory || now, 'milliseconds')
+    lastHistory = now
+
+    const report = prepareReport(text, diff)
+
+    historyElement.insertBefore(report, historyElement.firstChild)
   }
   recognition = new Speechless.RecognitionFactory(
     'en',
@@ -42,7 +59,7 @@
         reader.onloadend = function() {
           base64data = reader.result
           fetch(
-            'https://content-speech.googleapis.com/v1/speech:recognize?alt=json&key=AIzaSyCnjdESqUS5buB0r9xDV-1r7YXeYJvesvA',
+            'https://content-speech.googleapis.com/v1/speech:recognize?alt=json&key=AIzaSyBW2ROnSfou8fo0J7Pa-B2uPq3U45V-jnk',
             {
               method: 'post',
               body: JSON.stringify({
@@ -87,6 +104,8 @@
 
   document.getElementById('listen').addEventListener('click', () => {
     recognition.listen()
+    lastHistory = moment()
+    lastEvent = moment()
   })
   document.getElementById('stop').addEventListener('click', () => {
     recognition.stop()

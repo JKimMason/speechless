@@ -27,12 +27,12 @@
 .report {
   color: #23ff00;
   opacity: 0.4;
-  padding: 5px;
-  transform: translateX(-5px);
-  animation: enter forwards 1s cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 10px;
+  /* transform: translateX(-25px); */
+  animation: enter forwards 2s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.report-time {
-  margin-right: 10px;
+.report + .report {
+  border-top: 1px solid #264e1f;
 }
 .loader {
   position: absolute;
