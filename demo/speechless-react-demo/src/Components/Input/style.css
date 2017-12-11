@@ -1,0 +1,30 @@
+.Input {
+  color: white;
+  padding: 0 1rem;
+}
+.Input input:disabled,
+.Input input {
+  border: 1px solid #efefef;
+  box-shadow: 0 2px 2px -2px rgba(0, 0, 0, 0.4);
+  padding: 1rem;
+  width: 70vw;
+  max-width: 300px;
+  border-radius: 2px;
+  font-size: 1rem;
+  outline: none;
+  background: white;
+  cursor: default;
+  user-select: none;
+}
+.Input button {
+  background: transparent;
+  border: 0;
+  padding: 0.4rem 0.8rem;
+  color: white;
+  outline: none;
+  cursor: pointer;
+}
+
+.Input img {
+  height: 24px;
+}
