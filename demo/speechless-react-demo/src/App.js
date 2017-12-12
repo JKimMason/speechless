@@ -1,35 +1,37 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
-import Header from './Components/Header'
-import Input from './Components/Input'
-import './App.css'
-import { RecognitionFactory, ExternalRecognition, NativeRecognition } from 'speechless'
-import { getRecognition } from './api'
+import "./registerServiceWorker";
+
+import Header from "./Components/Header";
+import Input from "./Components/Input";
+import "./App.css";
+import { Speechless, ExternalRecognition, NativeRecognition } from "speechless";
+import { getRecognition } from "./api";
 
 class App extends Component {
   render() {
     return (
       <div className="App">
         <Header />
-        <div className="Body column center">
-          <div className="column end">
-            <div className="row center">
+        <div className="Body column center middle">
+          <div className="Inputs column end">
+            <div className="column center">
               <h3>Auto detect</h3>
-              <Input recognition={RecognitionFactory('en', getRecognition)} />
+              <Input recognition={Speechless("en", getRecognition)} />
             </div>
-            <div className="row center">
+            <div className="column center">
               <h3>External</h3>
-              <Input recognition={new ExternalRecognition('en', getRecognition)} />
+              <Input recognition={new ExternalRecognition("en", getRecognition)} />
             </div>
-            <div className="row center">
+            <div className="column center" disabled={NativeRecognition.isSupported()}>
               <h3>Native</h3>
-              <Input recognition={new NativeRecognition('en')} />
+              <Input recognition={new NativeRecognition("en")} />
             </div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default App
+export default App;

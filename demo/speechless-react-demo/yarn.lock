@@ -1522,8 +1522,8 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
 core-js@^2.4.0, core-js@^2.5.0:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.2.tgz#bc4648656e7dc9dc80d7d3c7bbc172d96e744e63"
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.3.tgz#8acc38345824f16d8365b7c9b4259168e8ed603e"
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -5777,9 +5777,9 @@ spdy@^3.4.1:
     select-hose "^2.0.0"
     spdy-transport "^2.0.18"
 
-speechless@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/speechless/-/speechless-0.1.0.tgz#d792b39b2dfc03b30eb64ef945af8a60f490f707"
+speechless@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/speechless/-/speechless-0.2.0.tgz#dcd7af41c643b0dfeb6308fefc39c237ed12d242"
   dependencies:
     web-recorder "0.0.7"
 
