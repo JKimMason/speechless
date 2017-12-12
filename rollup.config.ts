@@ -7,7 +7,7 @@ const pkg = require('./package.json')
 const libraryName = 'speechless'
 
 export default {
-  input: `compiled/index.js`,
+  input: `compiled/speechless.js`,
   output: [
     { file: pkg.main, name: 'Speechless', format: 'umd' },
     { file: pkg.module, format: 'es' }
