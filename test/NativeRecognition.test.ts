@@ -1,6 +1,6 @@
 import { SpeechRecognitionMock } from 'speech-recognition-mock'
 
-import { NativeRecognition } from '../src'
+import { NativeRecognition } from '../src/speechless'
 import { IWindow, IRecognitionEvent } from '../src/AbstractRecognition'
 
 let recognition: NativeRecognition

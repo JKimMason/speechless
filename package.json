@@ -1,6 +1,6 @@
 {
   "name": "speechless",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Speech to text recognition with remote fallback (Native/External)",
   "keywords": [
     "speech",
@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@types/jest": "21.1.6",
-    "@types/node": "8.0.57",
+    "@types/node": "8.0.58",
     "@types/webspeechapi": "0.0.28",
     "babel-jest": "21.2.0",
     "coveralls": "3.0.0",
@@ -88,7 +88,7 @@
     "jest-cli": "21.2.1",
     "jsdom": "11.3.0",
     "lint-staged": "6.0.0",
-    "prettier": "1.9.1",
+    "prettier": "1.9.2",
     "rimraf": "2.6.1",
     "rollup": "^0.52.1",
     "rollup-plugin-commonjs": "^8.2.6",
@@ -97,7 +97,7 @@
     "speech-recognition-mock": "0.0.4",
     "standardized-audio-context-mock": "3.1.17",
     "ts-jest": "21.2.4",
-    "ts-node": "3.3.0",
+    "ts-node": "4.0.1",
     "tslint": "5.8.0",
     "tslint-config-prettier": "1.6.0",
     "tslint-config-standard": "7.0.0",

@@ -321,12 +321,12 @@ var ExternalRecognition = /** @class */ (function (_super) {
     return ExternalRecognition;
 }(AbstractRecognition));
 
-function RecognitionFactory(lang, remoteCall) {
+function Speechless(lang, remoteCall) {
     if (NativeRecognition.isSupported()) {
         return new NativeRecognition(lang);
     }
     return new ExternalRecognition(lang, remoteCall);
 }
 
-export { RecognitionFactory, NativeRecognition, ExternalRecognition };
+export { Speechless, NativeRecognition, ExternalRecognition };
 //# sourceMappingURL=speechless.es5.js.map
