@@ -1,7 +1,11 @@
 .Input {
-  color: white;
-  padding: 0 1rem;
+
 }
+
+.Input img {
+  height: 24px;
+}
+
 .Input input:disabled,
 .Input input {
   border: 1px solid #efefef;
@@ -20,7 +24,6 @@
   background: transparent;
   border: 0;
   padding: 0.4rem 0.8rem;
-  color: white;
   outline: none;
   cursor: pointer;
 }
