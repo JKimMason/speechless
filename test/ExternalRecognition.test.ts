@@ -1,4 +1,4 @@
-import { ExternalRecognition } from '../src'
+import { ExternalRecognition } from '../src/speechless'
 import { IWindow } from '../src/AbstractRecognition'
 import { IExternalRecognitionState } from '../src/ExternalRecognition'
 import { setTimeout } from 'timers'

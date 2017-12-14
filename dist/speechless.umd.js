@@ -327,14 +327,14 @@ var ExternalRecognition = /** @class */ (function (_super) {
     return ExternalRecognition;
 }(AbstractRecognition));
 
-function RecognitionFactory(lang, remoteCall) {
+function Speechless(lang, remoteCall) {
     if (NativeRecognition.isSupported()) {
         return new NativeRecognition(lang);
     }
     return new ExternalRecognition(lang, remoteCall);
 }
 
-exports.RecognitionFactory = RecognitionFactory;
+exports.Speechless = Speechless;
 exports.NativeRecognition = NativeRecognition;
 exports.ExternalRecognition = ExternalRecognition;
 
