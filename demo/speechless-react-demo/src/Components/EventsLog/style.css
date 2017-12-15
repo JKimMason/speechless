@@ -1,8 +1,38 @@
 .EventsLog {
-  height: 200px;
-  width: 200px;
+  height: 20px;
+  overflow-y: hidden;
+  padding: 5px;
+  transition: height 1s;
+}
+
+.EventsLog.open {
+  height: 60px;
   overflow-y: scroll;
+  padding: 5px;
 }
 
 .Event {
+  user-select: none;
+  margin-bottom: 5px;
+  animation: fade-in both 1s;
+  animation-iteration-count: 1;
+}
+.Event ._time {
+  margin-right: 20px;
+  padding: 2px;
+  background-color: #00b8ff;
+  color: white;
+  font-size: 13px;
+  border-radius: 3px;
+}
+.Event ._type {
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

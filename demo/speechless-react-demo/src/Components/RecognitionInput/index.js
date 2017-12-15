@@ -2,6 +2,10 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 
+import ReactMarkdown from "react-markdown";
+
+import CodeBlock from "../CodeBlock";
+
 import EventsLog from "../EventsLog";
 import loader from "../../Assets/loader.svg";
 import recording from "../../Assets/recording.svg";
@@ -12,7 +16,8 @@ import "./style.css";
 export default class RecognitionInput extends PureComponent {
   static propTypes = {
     recognition: PropTypes.object,
-    title: PropTypes.string
+    title: PropTypes.string,
+    source: PropTypes.string
   };
   state = {
     data: "",
@@ -36,7 +41,7 @@ export default class RecognitionInput extends PureComponent {
   onEvent = ev => {
     this.setState(prevState => ({
       ...prevState,
-      events: [...prevState.events, { ev, time: moment().format("hh:mm:ss:SSSSS") }]
+      events: [{ ev, time: moment().format("hh:mm:ss:SSSSS") }, ...prevState.events]
     }));
   };
   onListen = () => {
@@ -68,20 +73,27 @@ export default class RecognitionInput extends PureComponent {
   }
   render() {
     const { data, fetching, events } = this.state;
-    const { title } = this.props;
+    const { title, source } = this.props;
     return (
-      <div className="Input row">
+      <div className="Input column">
         <div className="column">
           <h3>{title}</h3>
-          <div className="row middle">
-            <input disabled placeholder="press the mic..." name="msg" type="text" value={data} />
-            <button disabled={fetching} type="button" onClick={this.onListen}>
-              {this.renderButton()}
-            </button>
-          </div>
         </div>
-        <div className="column">
-          <EventsLog events={events} />
+        <div className="row">
+          <div className="column">
+            <div className="row middle">
+              <input disabled placeholder="press the mic..." name="msg" type="text" value={data} />
+              <button disabled={fetching} type="button" onClick={this.onListen}>
+                {this.renderButton()}
+              </button>
+            </div>
+            <div className="column">
+              <EventsLog events={events} />
+            </div>
+          </div>
+          <div className="column source">
+            <ReactMarkdown source={source} renderers={{ code: CodeBlock }} />
+          </div>
         </div>
       </div>
     );

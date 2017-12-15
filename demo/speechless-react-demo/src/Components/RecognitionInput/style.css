@@ -31,3 +31,14 @@
 .Input img {
   height: 24px;
 }
+
+.Input .source{
+  width: 50vw;
+}
+.Input .source pre{ 
+  margin: 0;
+}
+.Input .source code{ 
+  height: 350px;
+  overflow-y: scroll;
+}
