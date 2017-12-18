@@ -1,5 +1,5 @@
-.Input {
-
+.Input:disabled {
+  opacity: 0.5;
 }
 
 .Input img {
@@ -27,18 +27,22 @@
   outline: none;
   cursor: pointer;
 }
+.Input button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .Input img {
   height: 24px;
 }
 
-.Input .source{
+.Input .source {
   width: 50vw;
 }
-.Input .source pre{ 
+.Input .source pre {
   margin: 0;
 }
-.Input .source code{ 
+.Input .source code {
   height: 350px;
   overflow-y: scroll;
 }

@@ -1,15 +1,13 @@
 .EventsLog {
-  height: 20px;
-  overflow-y: hidden;
   padding: 5px;
   transition: height 1s;
-}
-
-.EventsLog.open {
-  height: 60px;
+  height: 200px;
   overflow-y: scroll;
+  overflow-x: hidden;
+  width: calc( 100% + 15px );
   padding: 5px;
 }
+
 
 .Event {
   user-select: none;
@@ -24,6 +22,8 @@
   color: white;
   font-size: 13px;
   border-radius: 3px;
+  min-width: 30%;
+  text-align: center;
 }
 .Event ._type {
 }

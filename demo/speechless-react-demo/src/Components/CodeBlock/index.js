@@ -23,7 +23,7 @@ export default class CodeBlock extends React.PureComponent {
   }
 
   render() {
-    const { value, language } = this.props;
+    const { value } = this.props;
     return (
       <pre>
         <code ref={this.setRef}>

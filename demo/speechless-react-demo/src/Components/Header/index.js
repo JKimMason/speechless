@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import logo from '../../Assets/logo.svg'
-import code from '../../Assets/code.svg'
-import github from '../../Assets/github.svg'
+import code from '../../Assets/img/code.svg'
+import github from '../../Assets/img/github.svg'
 import './style.css'
 
 export default class Header extends PureComponent {
@@ -12,11 +10,7 @@ export default class Header extends PureComponent {
     return (
       <nav className="Header row between middle">
         <div className="Header-left row middle">
-          <img src={logo} className="Header-logo" alt="logo" />
           <h1>Speechless</h1>
-          <div>Demo</div>
-          <div>Install</div>
-          <div>Why?</div>
           <div>
             <a href="https://puemos.github.io/speechless">Docs</a>
           </div>

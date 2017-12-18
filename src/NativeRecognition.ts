@@ -19,8 +19,9 @@ export class NativeRecognition extends AbstractRecognition<INativeRecognitionSta
     this.onSpeechRecognitionResult = this.onSpeechRecognitionResult.bind(this)
     this.onSpeechRecognitionEnd = this.onSpeechRecognitionEnd.bind(this)
     this.onSpeechRecognitionStart = this.onSpeechRecognitionStart.bind(this)
-
-    this.setup()
+    if (NativeRecognition.isSupported()) {
+      this.setup()
+    }
     return this
   }
 
@@ -34,19 +35,10 @@ export class NativeRecognition extends AbstractRecognition<INativeRecognitionSta
     return 'webkitSpeechRecognition' in window
   }
 
-  setup(): this {
-    const SpeechRecognition = NativeRecognition.getSpeechRecognition()
-    this.speechRecognition = new SpeechRecognition()
-    this.speechRecognition.continuous = true
-    this.speechRecognition.interimResults = true
-    this.speechRecognition.lang = this.getLang()
-    this.speechRecognition.onresult = this.onSpeechRecognitionResult
-    this.speechRecognition.onend = this.onSpeechRecognitionEnd
-    this.speechRecognition.onstart = this.onSpeechRecognitionStart
-    return this
-  }
-
   listen(): NativeRecognition {
+    if (!NativeRecognition.isSupported()) {
+      throw new Error('NativeRecognition is not supported in your browser')
+    }
     const { listening } = this.getState()
     if (!listening) {
       this.setState({
@@ -58,6 +50,9 @@ export class NativeRecognition extends AbstractRecognition<INativeRecognitionSta
   }
 
   stop(): NativeRecognition {
+    if (!NativeRecognition.isSupported()) {
+      throw new Error('NativeRecognition is not supported in your browser')
+    }
     const { listening } = this.getState()
     if (listening) {
       this.setState({
@@ -65,6 +60,18 @@ export class NativeRecognition extends AbstractRecognition<INativeRecognitionSta
       })
       this.speechRecognition.stop()
     }
+    return this
+  }
+
+  private setup(): this {
+    const SpeechRecognition = NativeRecognition.getSpeechRecognition()
+    this.speechRecognition = new SpeechRecognition()
+    this.speechRecognition.continuous = true
+    this.speechRecognition.interimResults = true
+    this.speechRecognition.lang = this.getLang()
+    this.speechRecognition.onresult = this.onSpeechRecognitionResult
+    this.speechRecognition.onend = this.onSpeechRecognitionEnd
+    this.speechRecognition.onstart = this.onSpeechRecognitionStart
     return this
   }
 

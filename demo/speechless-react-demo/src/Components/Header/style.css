@@ -6,11 +6,10 @@
   box-shadow: 0 8px 8px -8px rgba(0, 0, 0, 0.4);
 }
 
-a:-webkit-any-link,
-Header a,
-Header a:visited,
-Header a:hover,
-Header a:active {
+.Header a,
+.Header a:visited,
+.Header a:hover,
+.Header a:active {
   color: white;
   text-decoration: none;
 }
