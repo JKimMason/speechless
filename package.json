@@ -1,6 +1,6 @@
 {
   "name": "speechless",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Speech to text recognition with remote fallback (Native/External)",
   "keywords": [
     "speech",
@@ -28,7 +28,7 @@
   "scripts": {
     "precommit": "lint-staged && npm run build",
     "prepush": "npm run test:prod && npm run build",
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'" ,
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
     "build": "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
     "start": "tsc -w & rollup -c rollup.config.ts -w",
