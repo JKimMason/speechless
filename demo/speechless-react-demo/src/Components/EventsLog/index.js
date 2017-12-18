@@ -30,7 +30,7 @@ export default class EventsLog extends PureComponent {
   render() {
     const { events } = this.props
     return (
-      <div className={'EventsLog'} >
+      <div className={'EventsLog'}>
         {events.map(event => <Event key={event.time} time={event.time} type={event.ev.type} />)}
       </div>
     )

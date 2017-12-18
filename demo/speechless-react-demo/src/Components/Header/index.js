@@ -15,7 +15,7 @@ export default class Header extends PureComponent {
             <a href="https://puemos.github.io/speechless">Docs</a>
           </div>
         </div>
-    
+
         <div className="Header-right row middle around">
           <div>
             <a href="https://github.com/puemos/speechless/tree/master/demo">

@@ -1,15 +1,15 @@
-import "./registerServiceWorker";
+import './registerServiceWorker'
 
-import React, { Component } from "react";
-import { Speechless, ExternalRecognition, NativeRecognition } from "speechless";
+import React, { Component } from 'react'
+import { Speechless, ExternalRecognition, NativeRecognition } from 'speechless'
 
-import Header from "./Components/Header";
-import RecognitionInput from "./Components/RecognitionInput";
-import { getRecognition } from "./api";
+import Header from './Components/Header'
+import RecognitionInput from './Components/RecognitionInput'
+import { getRecognition } from './api'
 
-import  sources from "./Assets/json/demoSources.json";
+import sources from './Assets/json/demoSources.json'
 
-import "./App.css";
+import './App.css'
 
 class App extends Component {
   render() {
@@ -20,22 +20,22 @@ class App extends Component {
           <div className="Inputs column end">
             <div className="column center">
               <RecognitionInput
-                title={"Auto detect recognition"}
-                recognition={Speechless("en", getRecognition)}
+                title={'Auto detect recognition'}
+                recognition={Speechless('en', getRecognition)}
                 source={sources.auto}
               />
             </div>
             <div className="column center">
               <RecognitionInput
-                title={"External recognition"}
-                recognition={new ExternalRecognition("en", getRecognition)}
+                title={'External recognition'}
+                recognition={new ExternalRecognition('en', getRecognition)}
                 source={sources.external}
               />
             </div>
             <div className="column center">
               <RecognitionInput
-                title={"Native recognition"}
-                recognition={new NativeRecognition("en")}
+                title={'Native recognition'}
+                recognition={new NativeRecognition('en')}
                 source={sources.native}
                 disabled={!NativeRecognition.isSupported()}
               />
@@ -43,8 +43,8 @@ class App extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
