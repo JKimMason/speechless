@@ -80,7 +80,9 @@ var NativeRecognition = /** @class */ (function (_super) {
         _this.onSpeechRecognitionResult = _this.onSpeechRecognitionResult.bind(_this);
         _this.onSpeechRecognitionEnd = _this.onSpeechRecognitionEnd.bind(_this);
         _this.onSpeechRecognitionStart = _this.onSpeechRecognitionStart.bind(_this);
-        _this.setup();
+        if (NativeRecognition.isSupported()) {
+            _this.setup();
+        }
         return _this;
     }
     NativeRecognition.getSpeechRecognition = function () {
@@ -90,18 +92,10 @@ var NativeRecognition = /** @class */ (function (_super) {
     NativeRecognition.isSupported = function () {
         return 'webkitSpeechRecognition' in window;
     };
-    NativeRecognition.prototype.setup = function () {
-        var SpeechRecognition = NativeRecognition.getSpeechRecognition();
-        this.speechRecognition = new SpeechRecognition();
-        this.speechRecognition.continuous = true;
-        this.speechRecognition.interimResults = true;
-        this.speechRecognition.lang = this.getLang();
-        this.speechRecognition.onresult = this.onSpeechRecognitionResult;
-        this.speechRecognition.onend = this.onSpeechRecognitionEnd;
-        this.speechRecognition.onstart = this.onSpeechRecognitionStart;
-        return this;
-    };
     NativeRecognition.prototype.listen = function () {
+        if (!NativeRecognition.isSupported()) {
+            throw new Error('NativeRecognition is not supported in your browser');
+        }
         var listening = this.getState().listening;
         if (!listening) {
             this.setState({
@@ -112,6 +106,9 @@ var NativeRecognition = /** @class */ (function (_super) {
         return this;
     };
     NativeRecognition.prototype.stop = function () {
+        if (!NativeRecognition.isSupported()) {
+            throw new Error('NativeRecognition is not supported in your browser');
+        }
         var listening = this.getState().listening;
         if (listening) {
             this.setState({
@@ -119,6 +116,17 @@ var NativeRecognition = /** @class */ (function (_super) {
             });
             this.speechRecognition.stop();
         }
+        return this;
+    };
+    NativeRecognition.prototype.setup = function () {
+        var SpeechRecognition = NativeRecognition.getSpeechRecognition();
+        this.speechRecognition = new SpeechRecognition();
+        this.speechRecognition.continuous = true;
+        this.speechRecognition.interimResults = true;
+        this.speechRecognition.lang = this.getLang();
+        this.speechRecognition.onresult = this.onSpeechRecognitionResult;
+        this.speechRecognition.onend = this.onSpeechRecognitionEnd;
+        this.speechRecognition.onstart = this.onSpeechRecognitionStart;
         return this;
     };
     NativeRecognition.prototype.onChange = function (interimTranscript) {

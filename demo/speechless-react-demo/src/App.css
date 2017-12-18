@@ -1,0 +1,16 @@
+.App{
+    background: #fafafa;
+    min-height: 100vh;
+}
+
+.Body{
+    padding: 2rem;
+}
+
+.Inputs > div {
+    margin-bottom: 3rem;
+}
+
+.Inputs h3 {
+    /* width: 10rem; */
+}

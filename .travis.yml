@@ -16,3 +16,8 @@ script:
 after_success:
   - npm run report-coverage
   - npm run deploy-docs
+  - npm run build-demo
+deploy:
+  provider: surge
+  project: ./demo/speechless-react-demo/build
+  domain: speechless.surge.sh  
