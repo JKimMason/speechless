@@ -1,6 +1,6 @@
 {
   "name": "speechless",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Speech to text recognition with remote fallback (Native/External)",
   "keywords": [
     "speech",
@@ -36,10 +36,15 @@
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
+    "build-demo": "ts-node tools/build-demo",
     "report-coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
+      "prettier --write --no-semi --single-quote",
+      "git add"
+    ],
+    "{demo}/**/*.js": [
       "prettier --write --no-semi --single-quote",
       "git add"
     ]
@@ -80,7 +85,7 @@
     "@types/jest": "21.1.6",
     "@types/node": "8.5.1",
     "@types/webspeechapi": "0.0.28",
-    "babel-jest": "21.2.0",
+    "babel-jest": "22.0.0",
     "coveralls": "3.0.0",
     "cross-env": "5.1.1",
     "husky": "0.14.3",

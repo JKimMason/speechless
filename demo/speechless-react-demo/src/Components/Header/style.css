@@ -1,0 +1,28 @@
+.Header {
+  background: linear-gradient(to right, rgb(255, 65, 65), rgb(255, 96, 57));
+  height: 4rem;
+  color: white;
+  padding: 0 1rem;
+  box-shadow: 0 8px 8px -8px rgba(0, 0, 0, 0.4);
+}
+
+.Header a,
+.Header a:visited,
+.Header a:hover,
+.Header a:active {
+  color: white;
+  text-decoration: none;
+}
+
+.Header-left > div,
+.Header-right > div {
+  margin-left: 1.5rem;
+}
+.Header-logo {
+  height: 1.5rem;
+  margin-right: 2rem;
+}
+.Header-code-logo,
+.Header-github-logo {
+  height: 1rem;
+}

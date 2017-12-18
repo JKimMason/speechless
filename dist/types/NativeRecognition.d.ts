@@ -10,9 +10,9 @@ export declare class NativeRecognition extends AbstractRecognition<INativeRecogn
     constructor(lang?: string);
     static getSpeechRecognition(): SpeechRecognitionStatic;
     static isSupported(): boolean;
-    setup(): this;
     listen(): NativeRecognition;
     stop(): NativeRecognition;
+    private setup();
     private onChange(interimTranscript);
     private onFinal(finalTranscript);
     private onSpeechRecognitionStart();

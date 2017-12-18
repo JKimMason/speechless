@@ -1,0 +1,38 @@
+.EventsLog {
+  padding: 5px;
+  transition: height 1s;
+  height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  width: calc( 100% + 15px );
+  padding: 5px;
+}
+
+
+.Event {
+  user-select: none;
+  margin-bottom: 5px;
+  animation: fade-in both 1s;
+  animation-iteration-count: 1;
+}
+.Event ._time {
+  margin-right: 20px;
+  padding: 2px;
+  background-color: #00b8ff;
+  color: white;
+  font-size: 13px;
+  border-radius: 3px;
+  min-width: 30%;
+  text-align: center;
+}
+.Event ._type {
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
