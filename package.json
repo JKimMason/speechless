@@ -28,7 +28,7 @@
   "scripts": {
     "precommit": "lint-staged && npm run build",
     "prepush": "npm run test:prod && npm run build",
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'" ,
     "prebuild": "rimraf dist",
     "build": "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
     "start": "tsc -w & rollup -c rollup.config.ts -w",
@@ -41,6 +41,10 @@
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
+      "prettier --write --no-semi --single-quote",
+      "git add"
+    ],
+    "{demo}/**/*.js": [
       "prettier --write --no-semi --single-quote",
       "git add"
     ]
