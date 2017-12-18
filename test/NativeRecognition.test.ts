@@ -13,7 +13,6 @@ describe('NativeRecognition', () => {
   beforeEach(() => {
     ;(window as IWindow).webkitSpeechRecognition = SpeechRecognitionMock
     recognition = new NativeRecognition('en')
-    recognition.setup()
     recognition.addEventListener('end', onEndCallback)
     recognition.addEventListener('data', onDataCallback)
     recognition.addEventListener('stop', onStopCallback)
@@ -34,6 +33,18 @@ describe('NativeRecognition', () => {
   it('should not be supported', () => {
     delete (window as IWindow).webkitSpeechRecognition
     expect(NativeRecognition.isSupported()).toBeFalsy()
+  })
+
+  it('should not be supported', () => {
+    delete (window as IWindow).webkitSpeechRecognition
+    recognition = new NativeRecognition('en')
+    expect(() => recognition.listen()).toThrow()
+  })
+
+  it('should not be supported', () => {
+    delete (window as IWindow).webkitSpeechRecognition
+    recognition = new NativeRecognition('en')
+    expect(() => recognition.stop()).toThrow()
   })
 
   it('should set it lang', () => {
