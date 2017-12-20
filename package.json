@@ -82,10 +82,10 @@
     "mapCoverage": true
   },
   "devDependencies": {
-    "@types/jest": "21.1.6",
+    "@types/jest": "21.1.9",
     "@types/node": "8.5.1",
     "@types/webspeechapi": "0.0.28",
-    "babel-jest": "22.0.1",
+    "babel-jest": "22.0.2",
     "coveralls": "3.0.0",
     "cross-env": "5.1.1",
     "husky": "0.14.3",
