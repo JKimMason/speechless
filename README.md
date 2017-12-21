@@ -115,7 +115,7 @@ Emitted after a force stop.
 
 `function () {}`
 
-Emitted when the the audio is bien sended to 3-rd party service
+Emitted when the the audio is being sent to 3-rd party service
 
 #### Event `'data'`
 
