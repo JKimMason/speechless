@@ -2,7 +2,7 @@
 
 Speech to text recognition with remote fallback (Native/External)
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/puemos/speechless.svg)](https://greenkeeper.io/)
+
 [![Travis](https://img.shields.io/travis/puemos/speechless.svg)](https://travis-ci.org/puemos/speechless)
 [![Coveralls](https://img.shields.io/coveralls/puemos/speechless.svg)](https://coveralls.io/github/puemos/speechless)
 [![Dev Dependencies](https://david-dm.org/puemos/speechless/dev-status.svg)](https://david-dm.org/puemos/speechless)
